@@ -1,5 +1,3 @@
-package CustomerInterface;
-
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -399,4 +397,3 @@ public class Customer extends JPanel implements ActionListener {
 	}
 
 }
-
