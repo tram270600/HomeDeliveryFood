@@ -15,7 +15,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class SignInPanel extends JPanel implements ActionListener {
-	RestaurantPanel res;
+	static RestaurantPanel res;
 	ShipperPanel shipper;
 	CustomerPanel customer;
 	
@@ -108,8 +108,6 @@ public class SignInPanel extends JPanel implements ActionListener {
 
 				try {
 					System.out.println("Doing searching");
-//					JavaConnect2SQL.searchInfo(tusername.getText(), passWord);
-///*
  					if (JavaConnect2SQL.searchInfo(tusername.getText(), passWord) == true)
 						mess.setText("Login Success");
 					else
@@ -118,7 +116,8 @@ public class SignInPanel extends JPanel implements ActionListener {
 					System.out.println("Cannot search");
 					e1.printStackTrace();
 				}
-			createAccountPanel();}
+			createAccountPanel();
+			passwordhide.setText(""); tusername.setText("");mess.setText("");}
 		}
 			
 			
@@ -127,15 +126,15 @@ public class SignInPanel extends JPanel implements ActionListener {
 			System.out.println("Creating");
 			System.out.println(JavaConnect2SQL.getInfoType());
 			if(JavaConnect2SQL.getInfoType().equals("Restaurant")) {
-				res = new RestaurantPanel(JavaConnect2SQL.infoName, JavaConnect2SQL.infoAddress);
+				res = new RestaurantPanel(JavaConnect2SQL.infoName, JavaConnect2SQL.infoAddress, JavaConnect2SQL.infoResNo);
 				MainFrame.callSetPanel(res);
 			}
 			if(JavaConnect2SQL.getInfoType().equals("Customer")) {
-				customer = new CustomerPanel();
+				customer = new CustomerPanel("kn","nguyenhappy");
 				MainFrame.callSetPanel(customer);
 			}
 			if(JavaConnect2SQL.getInfoType().equals("Shipper")) {
-				shipper = new ShipperPanel();
+				shipper = new ShipperPanel(JavaConnect2SQL.infoName, JavaConnect2SQL.infoAddress);
 				MainFrame.callSetPanel(shipper);
 			}
 		}

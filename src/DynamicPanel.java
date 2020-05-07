@@ -3,9 +3,10 @@ import javax.swing.JPanel;
 
 public class DynamicPanel  extends JPanel  {
 	 static LogInPanel loginPanel = new LogInPanel();
-//	 static RestaurantPanel resP = new RestaurantPanel("Test","18/2");
+//	 static RestaurantPanel resP = new RestaurantPanel("Papaschicken","18/2","PC");
+//	 static CustomerPanel cusP = new CustomerPanel("Cus","test");
 
-public static LogInPanel getLoginPanel() {
+	 public static LogInPanel getLoginPanel() {
 		return loginPanel;
 	}
 	//	 static RestaurantPanel resP = new RestaurantPanel();
@@ -17,6 +18,7 @@ public static LogInPanel getLoginPanel() {
 		 add(loginPanel);
 //		 add(resPanel);
 //		 add(resP);
+//		 add(cusP);
 	    }
 
 	 public void setPanel(JPanel pn) {

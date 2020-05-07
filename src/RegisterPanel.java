@@ -22,8 +22,12 @@ import javax.swing.JTextField;
 
 public class RegisterPanel extends JPanel implements ActionListener {
 	private BufferedImage backGroundMenu;
-	public static String info;
-	public static String table = "Registration";
+	public static String info, infoRes, infoResAddress;
+	private static String ResNo = "";
+	public static String UserId;
+	
+	
+//	public static String table = "Registration";
 	public static String typeUser;
 	private JCheckBox term; 
     private JButton sub; 
@@ -667,18 +671,33 @@ public class RegisterPanel extends JPanel implements ActionListener {
                 tout.setText(data + data1 + data2 + data3+ data4); 
                 tout.setEditable(false); 
                 res.setText("Registration Successfully..");
-                infoUser(taccountName.getText(), tpassword.getText(), typeUser, tname.getText(),taddress.getText(),tphoneNumber.getText(),
-                		dataDob,dataGender);
-            
-//                MainFrame.getFrame().getJava2sql().updateRegisterInfo();}
+   //CONNECT WITH SQL, INSERT NEW ACCOUNT INTO DATABASE
+                infoUsers(typeUser, taccountName.getText(), tpassword.getText(), tname.getText(), tphoneNumber.getText(), 
+                		dataGender, dataDob, taddress.getText());
                 try {
-                	System.out.println("InFo:"+newInfo()+"in Table:"+table);
-					JavaConnect2SQL.updateInfoToSQL(table,newInfo());
+                	System.out.println("InFo:"+newInfo()+"in Table:"+"Users");
+					JavaConnect2SQL.updateInfoToSQL("Users",newInfo());
+					
+					if(JavaConnect2SQL.searchParticularInfo("UserID", "Users", taccountName.getText(), tpassword.getText())==true)
+						System.out.println("UserId found");
+					UserId = JavaConnect2SQL.getInfoTransfer();
+					
+					if(typeUser.equals("Restaurant")) {
+					infoRes(tname.getText(), tphoneNumber.getText(),dataGender, dataDob, taddress.getText());
+					JavaConnect2SQL.updateInfoToSQL("Restaurant", infoRes);
+					JavaConnect2SQL.updateInfoToSQL("ResAddress", infoResAddress);}
+					
 					System.out.println("Update Success");
+					MainFrame.callSetPanel(DynamicPanel.getLoginPanel().getSignIn());
+					
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					System.out.println("Dismiss info");
 					e1.printStackTrace();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					System.out.println("Can not found correspond UserID in Users table");
 				}
                 }
             	else res.setText("Please, fulfill information in form");
@@ -711,8 +730,6 @@ public class RegisterPanel extends JPanel implements ActionListener {
 	private boolean checkFulfill() {
 		 if((!tname.getText().equals(""))&&(!taddress.getText().equals(""))&&(!tphoneNumber.getText().equals(""))&&
 		            (!taccountName.getText().equals(""))&&(!tpassword.getText().equals("")))
-			 //&&(date.getSelectedIndex()!=0)&&(month.getSelectedIndex()!=0)&&(year.getSelectedIndex()!=0))
-		 
 		            return true;
 		return false;
 	}
@@ -723,12 +740,35 @@ public class RegisterPanel extends JPanel implements ActionListener {
 	  catch (IOException e) {e.printStackTrace();}
 	}
 	
-	public static String infoUser(String username, String password, String typeUser, String name, String address, String phone, String dob, String gender) {
-		info = "'"+username+"','"+password+"','"+typeUser+"','"+name+"','"+address+"','"+phone+"','"+dob+"','"+gender+"'";
+	public static String infoUsers(String typeUser, String username, String password, String name, String phone, String gender, String dob, String address) {
+		info = "'"+typeUser+"','"+username+"','"+password+"'";
 		System.out.println(info);
+		if(typeUser == "Restaurant") {
+			System.out.println(typeUser);
+		}
 		return info;
 		
 	}
+	public static String infoRes(String name, String phone, String gender, String dob, String address) {
+		createResNo(name);
+		infoRes = "'"+ UserId +"','"+"HCM"+"','"+ResNo+"','"+name+"','"+phone+"','"+gender+"','"+dob+"'";
+		infoResAddress(address);
+		return infoRes;}
+	public static String infoResAddress(String address) {
+		infoResAddress = "'"+ResNo+"','"+address+"'";
+		return infoResAddress;
+	}
+	
+	public static String createResNo(String s) {
+		int n = s.length();
+		for(int i = 0 ;i < n; i++) {
+			if(Character.isUpperCase(s.charAt(i))) {
+			ResNo += s.charAt(i);}
+		}
+		System.out.println("Res No: "+ResNo);
+		return ResNo;
+	}
+	
 	public static String newInfo() {
 		return info;
 	}

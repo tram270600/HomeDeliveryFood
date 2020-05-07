@@ -16,7 +16,14 @@ public class LogInPanel extends JPanel implements ActionListener {
 	private BufferedImage backGroundMenu;
 	static JButton btnSignIn, btnSignUp;
 	SignUpPanel signUp = new SignUpPanel();
-	SignInPanel signIn = new SignInPanel();
+	public SignInPanel getSignIn() {
+		return signIn;
+	}
+	public void setSignIn(SignInPanel signIn) {
+		this.signIn = signIn;
+	}
+
+	static SignInPanel signIn = new SignInPanel();
 	public LogInPanel(){
 		
 		btnSignIn = new JButton(new ImageIcon("ImageSource\\signin.png"));
@@ -35,7 +42,7 @@ public class LogInPanel extends JPanel implements ActionListener {
 	     this.add(btnSignIn);
     }
 	public void paint(Graphics g) { 
-		  try {backGroundMenu = ImageIO.read(new File("D:\\ImageSource\\Backmenu.jpg"));
+		  try {backGroundMenu = ImageIO.read(new File("ImageSource\\LogInPanel.png"));
 			   g.drawImage(backGroundMenu,0 ,0, null);} 
 		  catch (IOException e) {e.printStackTrace();}}
 	
