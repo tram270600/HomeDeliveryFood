@@ -83,7 +83,6 @@ public class JavaConnect2SQL {
 	            Statement st = connection.createStatement(
 	            ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 	            ResultSet rs = st.executeQuery(sqlSelect);
-	    		
 	        ) {
 	    	while(rs.next()) {
 	    	//	showUserInfo(rs);
@@ -109,21 +108,16 @@ public class JavaConnect2SQL {
 					MainFrame.getMainFrame().panel.loginPanel.signIn.res.showEvent();
 				}
 	    	}
-	     
 	}
 	}
 
 	public static void searchMenuInfo(String table, String ResNo, String DishName, String Amount) throws Exception {
 		connectToSQL();
-		String sqlSelect = "SELECT * FROM " + table +" M, Restaurant R WHERE M.ResNo = R.ResNo AND R.ResNo = '"+ResNo+"' AND M.DishName = '"+ DishName + "';";
+		String sqlSelect = "SELECT * FROM " + table + " M, Restaurant R WHERE M.ResNo = R.ResNo AND R.ResNo = '" + ResNo
+				+ "' AND M.DishName = '" + DishName + "';";
 		System.out.println(sqlSelect);
-	   
-	            
-		
 		try (Statement st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-	            ResultSet rs = st.executeQuery(sqlSelect);
-		) {
-			
+				ResultSet rs = st.executeQuery(sqlSelect);) {
 			while (rs.next()) {
 				String rows[] = new String[6];
 				rows[0] = rs.getString("DishID");
@@ -133,15 +127,87 @@ public class JavaConnect2SQL {
 				int price = Integer.parseInt(rs.getString("Price"));
 				int amount = Integer.parseInt(Amount);
 				int totalPrice = price * amount;
-				rows[4] = "" +totalPrice+ "";
+				rows[4] = "" + totalPrice + "";
 				int eventPrice = calculateDiscount(rs.getString("EventID"), totalPrice);
-				rows[5] = ""+eventPrice+"";
+				rows[5] = "" + eventPrice + "";
 
 				MainFrame.getMainFrame().panel.loginPanel.signIn.res.tableOrderModel.addRow(rows);
 			}
 		}
+	}
+
+	public static void searchMenuInfo2(String table, String ResNo, String DishName, String Amount) throws Exception {
+		connectToSQL();
+		String sqlSelect = "SELECT * FROM " + table + " M, Restaurant R WHERE M.ResNo = R.ResNo AND R.ResNo = '" + ResNo
+				+ "' AND M.DishName = '" + DishName + "';";
+		System.out.println(sqlSelect);
+		try (Statement st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				ResultSet rs = st.executeQuery(sqlSelect);) {
+			while (rs.next()) {
+				String rows[] = new String[5];
+				rows[0] = rs.getString("DishID");
+				rows[1] = DishName;
+				rows[2] = Amount;
+				int price = Integer.parseInt(rs.getString("Price"));
+				int amount = Integer.parseInt(Amount);
+				int totalPrice = price * amount;
+				rows[3] = "" + totalPrice + "";
+				int eventPrice = calculateDiscount(rs.getString("EventID"), totalPrice);
+				rows[4] = "" + eventPrice + "";
+				MainFrame.getMainFrame().panel.cart.tableCartModel.addRow(rows);
+			}
+		}
+	}
+	
+	public static int findNewBillID(String billOrOrder) throws Exception {
+		int nbillID = 0;
+		connectToSQL();
+		String sqlSelect = null;
+		if(billOrOrder.equals("BillID")) sqlSelect = "Select MAX(BillID) AS newBillID from Bill";
+		if(billOrOrder.equals("OrderID")) sqlSelect = "Select MAX(OrderID) AS newBillID from Orders";
 		
-	    }
+		System.out.println(sqlSelect);
+		
+		try (Statement st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	            ResultSet rs = st.executeQuery(sqlSelect);
+		) {
+			while (rs.next()) {
+				nbillID = rs.getInt(1);
+			}
+		}
+		if(billOrOrder.equals("BillID")) System.out.println("Newest Bill ID: "+nbillID);
+		else System.out.println("Newest Order ID: "+nbillID);
+		return nbillID;
+	}
+	
+	public static void calculateIngredientLeft(String billOrOrder, int billID)throws Exception{
+		connectToSQL();
+		String sqlSelect = null;
+		if(billOrOrder.equals("BillID"))
+			{	sqlSelect = "SELECT B.DishID, B.DishPerBill, Ingredient1, IngredientAmount, (IngredientAmount - B.DishPerBill)AS IngredientAfterBill " + 
+				"FROM Ingredient I, BasedOn B, Menu M WHERE B.DishID = M.DishID AND B.BillID ="+ billID+" AND M.Ingredient1 = I.IngredientID " + 
+				"UNION ALL " + 
+				"SELECT B.DishID, B.DishPerBill, Ingredient2, IngredientAmount, (IngredientAmount - B.DishPerBill)AS IngredientAfterBill " + 
+				"FROM Ingredient I, BasedOn B, Menu M WHERE B.DishID = M.DishID AND B.BillID ="+ billID+" AND M.Ingredient2 = I.IngredientID";}
+		if(billOrOrder.equals("OrderID"))
+			{	sqlSelect = "SELECT B.DishID, B.DishPerBill, Ingredient1, IngredientAmount, (IngredientAmount - B.DishPerBill)AS IngredientAfterBill " + 
+				"FROM Ingredient I, BasedOn B, Menu M WHERE B.DishID = M.DishID AND B.OrderID ="+ billID+" AND M.Ingredient1 = I.IngredientID " + 
+				"UNION ALL " + 
+				"SELECT B.DishID, B.DishPerBill, Ingredient2, IngredientAmount, (IngredientAmount - B.DishPerBill)AS IngredientAfterBill " + 
+				"FROM Ingredient I, BasedOn B, Menu M WHERE B.DishID = M.DishID AND B.OrderID ="+ billID+" AND M.Ingredient2 = I.IngredientID";}
+		
+		System.out.println(sqlSelect);
+		try (Statement st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	            ResultSet rs = st.executeQuery(sqlSelect);
+		) {
+			while (rs.next()) {
+			System.out.println("Ingredient Before use: "+rs.getString("IngredientAmount"));
+			System.out.println("Ingredient Left: "+rs.getString("IngredientAfterBill"));
+			System.out.println("Ingredient ID: "+ rs.getString("Ingredient1"));
+			updateResInfo("Ingredient", "IngredientAmount", rs.getString("IngredientAfterBill"), "IngredientID", rs.getString("Ingredient1"));
+			}
+		}
+	}
 	
 	public static int calculateDiscount(String EventID, int Amount) throws Exception {
 		int priceApplyEvent = Amount;
@@ -173,8 +239,6 @@ public class JavaConnect2SQL {
 		System.out.println("Price apply event"+priceApplyEvent);
 		return priceApplyEvent;
 	    }
-	
-	
 /*	public static ResultSet view(String table, String ResNo) throws Exception {
 		connectToSQL();
 		ResultSet result = null;
@@ -219,9 +283,7 @@ public class JavaConnect2SQL {
 		System.out.println(sqlSelect);
 		try (Statement st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 				ResultSet rs = st.executeQuery(sqlSelect);
-
 		) {
-			
 			while (rs.next()) {
 				String rows[] = new String[9];
 				rows[0] = rs.getString("DishID");
@@ -249,9 +311,7 @@ public class JavaConnect2SQL {
 		System.out.println(sqlSelect);
 		try (Statement st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 				ResultSet rs = st.executeQuery(sqlSelect);
-
 		) {
-			
 			while (rs.next()) {
 				if(!rs.isBeforeFirst()) {
 				String info1 = rs.getString("MaterialID");
@@ -265,7 +325,6 @@ public class JavaConnect2SQL {
 				else System.out.println("No data found");
 			}
 		}
-
 	}
 	
 	public static void updateResInfo(String table, String attributeChange, String dataN, String condition, String DishID) throws Exception {
@@ -277,8 +336,18 @@ public class JavaConnect2SQL {
 			int numberRowsAffected = st.executeUpdate(sqlUpdate);
 			System.out.println("Affected rows after update: "+numberRowsAffected);
 			}
-
 	}
+	public static void updateOrderStatus(String table, String attributeChange, String dataN, String condition, String DishID) throws Exception {
+		//UPDATE Menu SET Price = 145000 WHERE DishID = 'HBPC'; 
+		connectToSQL();
+		try (Statement st = connection.createStatement();){
+			String sqlUpdate =  "UPDATE "+table+" SET "+ attributeChange +" = '"+ dataN +"' WHERE "+condition +" = " + DishID;
+			System.out.println("SQL INSERT:"+sqlUpdate);
+			int numberRowsAffected = st.executeUpdate(sqlUpdate);
+			System.out.println("Affected rows after update: "+numberRowsAffected);
+			}
+	}
+	
 	public static void deleteResInfo(String table, String condition, String DishID) throws SQLException {
 		connectToSQL();
 		try (Statement st = connection.createStatement();){
@@ -327,7 +396,6 @@ public class JavaConnect2SQL {
 			
 			return true;}
 	        else return false;
-	     
 	}
 		}
 	
@@ -346,7 +414,6 @@ public class JavaConnect2SQL {
 	        else return false;
 	}
 		}
-	
 	
 /*	public static void main(String[] args) throws SQLException {
 		connectToSQL();
@@ -397,22 +464,44 @@ public class JavaConnect2SQL {
     }
 }
 */ 
-private static void showUserInfo(ResultSet rs) throws SQLException {
-	String typeUser;
-	System.out.println("Type User: "+rs.getString(3));
-    System.out.println("Name: " + rs.getString(5));
-    System.out.println("Address: " + rs.getString(6));
-    System.out.println("Phone: " + rs.getString(7));
-    System.out.println("CreatedDate: " + rs.getDate(9));
-    System.out.println("Gender Of Owner:"+rs.getString(10));
-    System.out.println("---");
-}
 
 private static ResultSet showUserInfos(ResultSet rs, String selectAttribute) throws SQLException {
 	System.out.println(rs);
 	infoTransfer = rs.getString(selectAttribute);
 	System.out.println("Info transfer in sql: "+infoTransfer);
 	return rs;
+}
+
+	public static void announceNewOrder(String resNo) throws SQLException {
+		connectToSQL();
+		int orderID = 0;
+		try {
+			orderID = findNewBillID("OrderID");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String sqlSelect = "SELECT O.OrderID, O.CusNo, O.OrderPrice, O.OrderStatus, B.DishID, B.DishPerBill FROM Orders O, BasedOn B WHERE O.ResNo ='"
+				+ resNo + "' AND O.OrderStatus = 'Unaccepted' AND O.OrderID = B.OrderID AND O.OrderID ="+orderID;
+		System.out.println(sqlSelect);
+		try (Statement st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				ResultSet rs = st.executeQuery(sqlSelect);) {
+			while (rs.next()) {
+				String rows[] = new String[2];
+				rows[0] = rs.getString("DishID");
+				rows[1] = rs.getString("DishPerBill");
+				/*
+				 * rs.getString("OrderID"); rs.getString("CusNo"); rs.getString("OrderPrice");
+				 * rs.getString("DishID"); rs.getString("Amount");
+				 */
+				MainFrame.getMainFrame().panel.loginPanel.signIn.res.announceComingBill(rs.getString("OrderID"),
+						rs.getString("OrderPrice"));
+				MainFrame.getMainFrame().panel.loginPanel.signIn.res.tableFromAppModel.addRow(rows);
+
+			}
+		}
+//	return false;
+	 
 }
 
 }

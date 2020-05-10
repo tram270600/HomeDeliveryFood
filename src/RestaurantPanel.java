@@ -20,10 +20,13 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -44,6 +47,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 public class RestaurantPanel extends JPanel implements ActionListener, ItemListener{
+	public static boolean newOrder = false;
+	
 	private BufferedImage backGroundMenu;
 	static JButton btnmessage, btnsetting, btnaddMenu, btnaddEvent;
 	private JLabel name, openinghour, address, menu, event, ingredient, material, tout; //tout announce the update result
@@ -54,6 +59,7 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 	Popup po;
 	JLabel popUpTitle;
 	JPanel popUpPanel;
+
 	//COMPONENT OF MENU
 	JButton btnAddToMenu;
 	private JPanel ingreInfo, materialInfo;
@@ -103,15 +109,19 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 	private JToggleButton switchmenu, switchevent, switchMaterial, switchIngredient, btnEditInfo, btnEditMenu; 
 	private JLabel eventDisplay, menuDisplay, ingredientDisplay, materialDisplay;
 	private JButton btnLogOut;
+	
 	//COMPONENT OF EDIT INFO
 	private JLayeredPane layeredPanel, layeredMenuPanel;
 	private JPanel editInfo, editMenu;
+	
 	//COMPONENT OF BILL 
 	private JPanel billInfo;
 	private JLayeredPane layeredBillPanel;
 	static DefaultTableModel tableOrderModel = new DefaultTableModel();
+	static DefaultTableModel tableFromAppModel = new DefaultTableModel();
 	private JTable tableOrder;
-	
+
+	private static JTable tableFromApp;
 	
 	//COMPONENT OF VIEW MENU
 	private String header[] = {"ID", "Name"};
@@ -119,7 +129,12 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 	private JTable tableDish;
 	static TableCellListener tcl;
 	
-	private static String ResNo;
+	private static String ResNo; 
+	private static int rbillID;
+	
+	static //ANNOUCEMENT
+	JFrame announceFrame;
+	
 
 	public RestaurantPanel(String name, String address, String ResNo) {
 		this.name = new JLabel(name);
@@ -196,15 +211,15 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 	    address.setLocation(100, 70); 
 	    add(address);
 	    
-		btnmessage = new JButton("Message");
-		btnsetting = new JButton("Setting");
-		btnaddMenu = new JButton("Menu");
-		btnaddEvent = new JButton("Event");
+		btnmessage = new JButton(new ImageIcon("ImageSource\\btnInRes\\btnaddBill.png"));
+		btnsetting = new JButton(new ImageIcon("ImageSource\\btnInRes\\btnSetting.png"));
+		btnaddMenu = new JButton(new ImageIcon("ImageSource\\btnInRes\\btnaddMenu.png"));
+		btnaddEvent = new JButton(new ImageIcon("ImageSource\\btnInRes\\btnaddEvent.png"));
 
-		btnmessage.setBounds(1100, y, 50, 50);
-		btnsetting.setBounds(1040, y, 50, 50);
-		btnaddMenu.setBounds(980, y, 50, 50);
-		btnaddEvent.setBounds(920, y, 50, 50);
+		btnmessage.setBounds(1080, y, 50, 50);
+		btnsetting.setBounds(1020, y, 50, 50);
+		btnaddMenu.setBounds(960, y, 50, 50);
+		btnaddEvent.setBounds(900, y, 50, 50);
 		
 		btnmessage.addActionListener(this);
 		btnsetting.addActionListener(this);
@@ -215,7 +230,6 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		tout.setFont(new Font("Arial", Font.PLAIN, 15));
 		tout.setSize(500, 25);
 		tout.setLocation(950, 70);
-		// c.
 		add(tout);
 		
 		this.add(btnaddEvent);
@@ -229,7 +243,18 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		editInfoComponent();
 		editMenuComponent();
 		billComponent();
+		
+		announceFrame = new JFrame("Announcement");
+		announceFrame.setBounds(225, 285, 300, 200);
+		announceFrame.getContentPane().setLayout(null);
+		announceFrame.setVisible(false);
+		announceFrame.setResizable(false);
+//		announceNewBill();
+//		JOptionPane.showMessageDialog(this, "Restaurant have new bill");
 	}
+	
+	
+	
 	
 	public void menuComponent() {
 		nameFood = new JLabel("Food's name");
@@ -510,19 +535,12 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		emonth.setSize(50, 20);
 		emonth.setLocation(1050, 250);
 		add(emonth);
-
-/*		eyear = new JComboBox(endyears);
-		syear.setFont(new Font("Arial", Font.PLAIN, 15));
-		eyear.setSize(60, 20);
-		eyear.setLocation(1110, 250);
-		add(eyear);*/
 		
 		eyear = new JComboBox(endyears);
 		eyear.setFont(new Font("Arial", Font.PLAIN, 15));
 		eyear.setSize(60, 20);
 		eyear.setLocation(1110, 250);
 		add(eyear);
-
 		
 		eventName = new JLabel("Event's Name");
 		eventName.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -718,12 +736,9 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		scroll.setLocation(0, 50);
 		scroll.setSize(600, 180);
 		editMenu.add(scroll);
-//		JavaConnect2SQL.view("Menu", ResNo);
 		
 		if(tableDish.getSelectedColumn()!=-1) {
-			
 			System.out.println("Row selected: "+tableDish.getSelectedColumn());
-			
 			System.out.println(tableModel.getValueAt(tableDish.getSelectedRow(),tableDish.getSelectedColumn()));
 		}
 	}
@@ -769,21 +784,16 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 			System.out.println("Call MenuTable: no");
 			e1.printStackTrace();
 		}
-	   
 		
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.setBounds(220,360,80,20);
 		editMenu.add(btnUpdate);
-		
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Update");
-				
-				
 				// btnEditMenu.setSelected(false);
 				if ((isCellEditTable(tcl.getRow(), tcl.getColumn()) == true)&&(tcl.getNewValue()!=null)) {
 					System.out.println(isCellEditTable(tcl.getRow(),  tcl.getColumn()));
-
 					tableDish.getEditingColumn();
 					tableDish.getEditingRow();
 
@@ -816,9 +826,8 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-				
 				} else
-					{System.out.println("Only Description and Price can be changed"); res.setText("Update Fail, only Description and Price can be changed");}
+					{System.out.println("Only description, price and event can be changed"); res.setText("Update Fail, only Description and Price can be changed");}
 			}
 		});
 		JButton btnRemove = new JButton("Remove");
@@ -839,26 +848,11 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
-					
-					
-					
-/*					
-				*/
-				
 				}
-/*				if(tableDish.getSelectedColumn()!=-1) {
-					System.out.println(" selected: "+tableDish.getSelectedColumn());
-					System.out.println(tableModel.getValueAt(tableDish.getSelectedRow(),tableDish.getSelectedColumn()));
-				
-				}
-*/
-				
 				//btnEditMenu.setSelected(false);
 			}});
 		closeEditMenuPanel();
 		}
-	
 	public void billComponent() {
 		layeredBillPanel = new JLayeredPane();
 		layeredBillPanel.setBounds(300, 100, 600, 400);
@@ -921,7 +915,6 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		tamount.setBounds(350, 210, 100, 20);
 		billInfo.add(tamount);
 		
-		
 		JLabel dishName = new JLabel("Dish's Name:");
 		dishName.setBounds(10, 190, 200, 50);
 		dishName.setFont(new Font("Serif", Font.ITALIC, 18));
@@ -941,7 +934,6 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		ttotalPrice.setBounds(470, 345, 100, 20);
 		billInfo.add(ttotalPrice);
 		
-		
 		tableOrder = new JTable();
 		String colsName[] = { "DishID", "DishName","Unit Price", "Amount", "Total Price", "Apply Discount"};
 		tableOrderModel.setColumnIdentifiers(colsName);
@@ -953,7 +945,6 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		scroll.setSize(600, 100);
 		billInfo.add(scroll);
 		
-		
 		JButton btnAddDish = new JButton("Add");
 		btnAddDish.setBounds(500,210,80,20);
 		billInfo.add(btnAddDish);
@@ -961,7 +952,7 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 			public void actionPerformed(ActionEvent e) {
 			try {
 				JavaConnect2SQL.searchMenuInfo("Menu", ResNo, tdishName.getText(),tamount.getText());
-//				getSum();
+				tdishName.setBackground(Color.WHITE); tamount.setBackground(Color.WHITE);
 				ttotalPrice.setText(""+getSum()+"");
 				tdishName.setText("");
 				tamount.setText("");
@@ -969,21 +960,62 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-				
 //				closeBillPanel();
 			}});
-		
-		
 		JButton btnOrder = new JButton("Make order");
 		btnOrder.setBounds(270,370,100,20);
 		billInfo.add(btnOrder);
 		btnOrder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Make order and find shipper");
-				closeBillPanel();
-				tableOrderModel.setRowCount(0);
-				ttotalPrice.setText("");
-			}});
+				if ((!tcusName.getText().equals("")) && (!tcusAddress.getText().equals(""))&& (!tcusPhone.getText().equals("")) && (tableOrderModel.getRowCount() != 0)) { // check fulfill
+					try {
+						JavaConnect2SQL.updateInfoToSQL("Bill", dataBill(tcusPhone.getText(), tcusAddress.getText(),
+								tcusName.getText(), ResNo, ttotalPrice.getText()));
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					for (int i = 0; i < tableOrderModel.getRowCount(); i++) {
+						System.out.println("Dish at: " + i + "has ID: " + tableOrderModel.getValueAt(i, 0) + " with: x "
+								+ tableOrderModel.getValueAt(i, 3));
+						try {
+							JavaConnect2SQL.updateInfoToSQL("BasedOn",
+									dataBasedOnBill((String) tableOrderModel.getValueAt(i, 0),
+											(String) tableOrderModel.getValueAt(i, 3)));
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} // catch
+					} // for
+					try {JavaConnect2SQL.calculateIngredientLeft("BillID",rbillID);} catch (Exception e1) {e1.printStackTrace();}
+					
+					System.out.println("Make order and find shipper");
+//					closeBillPanel();
+					tableOrderModel.setRowCount(0);
+					ttotalPrice.setText("");
+					tcusAddress.setText("");
+					tcusPhone.setText("");
+					tcusName.setText("");
+				} else {
+					JTextField[] labels = { tcusName, tcusAddress, tcusPhone };
+					for (int i = 0; i < 3; i++) {
+						if (labels[i].getText().equals(""))
+							labels[i].setBackground(new Color(251, 217, 154));
+					}
+					for (int i = 0; i < 3; i++) {
+						if (!labels[i].getText().equals(""))
+							labels[i].setBackground(Color.WHITE);
+					}
+					if (tableOrderModel.getRowCount() == 0) {
+						tdishName.setBackground(new Color(251, 217, 154));
+						tamount.setBackground(new Color(251, 217, 154));
+					}
+				}
+			}
+		});
 		closeBillPanel();
 	}
 		
@@ -1007,6 +1039,13 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 			closeBillPanel();
 			openBillPanel();
 			repaint();
+
+			try {
+				JavaConnect2SQL.announceNewOrder(ResNo);
+			} catch (SQLException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 		}
 		if (e.getSource() == btnsetting) {
 			tout.setText("");
@@ -1106,6 +1145,27 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		return eventInfo;
 	}
 	
+	private String dataBill(String cusPhone, String cusAddress, String cusName, String ResNo, String billPrice) {
+		String billInfo = "'HCM','"+cusPhone+"','"+cusAddress+"','"+cusName+"','"+ResNo+"',"+"null,'"+ billPrice+"'";
+		System.out.println(billInfo);
+		return billInfo;
+}
+	private String dataBasedOnBill(String dishID, String amount) throws Exception {
+		int billID = JavaConnect2SQL.findNewBillID("BillID");
+		String basedOnInfo = "'"+billID+"',null,'"+dishID+"','"+amount+"'";
+		System.out.println(basedOnInfo);
+		rbillID = billID;
+		return basedOnInfo;
+	}
+	
+	private String dataBasedOnOrder(String dishID, String amount) throws Exception {
+		int orderID = JavaConnect2SQL.findNewBillID("OrderID");
+		String basedOnInfo = "null,'"+orderID+"','"+dishID+"','"+amount+"'";
+		System.out.println(basedOnInfo);
+		rbillID = orderID;
+		return basedOnInfo;
+	}
+	
 	public static String createDishID(String s) {
 		int n = s.length();
 		String DishID = "";
@@ -1203,7 +1263,6 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 	public void openBillPanel() {layeredBillPanel.setVisible(true); billInfo.setVisible(true);}
 	public void closeBillPanel() {layeredBillPanel.setVisible(false);billInfo.setVisible(false);}
 	
-	
 	public void openEditInfoPanel() {
 		layeredPanel.setVisible(true);
 		editInfo.setVisible(true); 
@@ -1230,6 +1289,7 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		editMenu.setVisible(false);	
 		tableModel.setRowCount(0);
 	}
+	
 	public void openUpdateIngrePanel() {
 		layeredIngrePanel.setVisible(true);
 		ingreInfo.setVisible(true);	
@@ -1259,6 +1319,7 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		ingreText = defaultS;
 		materialText = defaultS; 
 		eventText = defaultS;
+		tableModel.setRowCount(0);
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
@@ -1281,6 +1342,7 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		 if (switchevent.isSelected()) {
 			 setDefault();
 			 switchevent.setText("ON"); add(event); add(eventtextScroller); repaint();
+			
 			 try {
 				JavaConnect2SQL.searchResInfo("Event", ResNo);
 				System.out.println("Event Display: SUCCESS");
@@ -1414,4 +1476,76 @@ public class RestaurantPanel extends JPanel implements ActionListener, ItemListe
 		oldMaterial = text;
 		return materialText;
 	}
+	public static void announceNewBill(String rnfromOrder, String CusNo, JTable orderList) {
+//		JOptionPane.showMessageDialog(MainFrame.getMainFrame().panel.loginPanel.signIn.res, "Restaurant have new bill");
+//			while(true) {
+//				if(newOrder == true) {
+//					
+//				}
+		if(ResNo == rnfromOrder) {
+			JFrame announceFrame = new JFrame("Announce");
+			announceFrame.setBounds(500, 200, 500, 300);
+			announceFrame.getContentPane().setLayout(null);
+			announceFrame.setVisible(true);
+			announceFrame.setResizable(false);
+
+			JButton btnPrivacy = new JButton("Confirm");
+			btnPrivacy.setBounds(190, 70, 120, 50);
+			announceFrame.add(btnPrivacy);
+
+			JButton btnLanguage = new JButton("Reject");
+			btnLanguage.setBounds(190, 150, 120, 50);
+			announceFrame.add(btnLanguage);
+		}
+			
+		
+	}
+	public static void announceComingBill(String torderId, String torderPrice) {
+			announceFrame.setVisible(true);
+		
+			JLabel orderId = new JLabel("Order ID: "+torderId);
+			orderId.setFont(new Font("Arial", Font.ITALIC, 15));
+			orderId.setSize(200, 20);
+			orderId.setLocation(10, 10);
+			announceFrame.add(orderId);
+			
+			JLabel orderPrice = new JLabel("TotalPrice:"+torderPrice);
+			orderPrice.setFont(new Font("Arial", Font.ITALIC, 15));
+			orderPrice.setSize(200, 20);
+			orderPrice.setLocation(10, 30);
+			announceFrame.add(orderPrice);
+		
+			tableFromApp = new JTable();
+			String colsName[] = { "DishID", "Amount"};
+			tableFromAppModel.setColumnIdentifiers(colsName);
+			tableFromApp.setModel(tableFromAppModel);
+			tableFromApp.setRowHeight(20);
+			JScrollPane scroll = new JScrollPane(tableFromApp);
+			scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			scroll.setLocation(0,50);
+			scroll.setSize(200, 100);
+			announceFrame.add(scroll);
+			
+			JButton btnAccept = new JButton("Accept");
+			btnAccept.setBounds(200, 20, 80, 20);
+			btnAccept.addActionListener(new ActionListener() {
+			    public void actionPerformed(ActionEvent e)
+			    {
+			    	int orderId = Integer.parseInt(torderId);
+			    	try {JavaConnect2SQL.calculateIngredientLeft("OrderID",orderId);} catch (Exception e1) {e1.printStackTrace();}
+			    	try {JavaConnect2SQL.updateOrderStatus("Orders", "OrderStatus", "Accepted", "OrderID", torderId);} catch (Exception e1) {e1.printStackTrace();}
+			    	announceFrame.dispose();
+			    }
+			    });
+			announceFrame.add(btnAccept);
+			
+
+//			JButton btnLanguage = new JButton("Reject");
+//			btnLanguage.setBounds(190, 150, 120, 50);
+//			announceFrame.add(btnLanguage);
+			
+		
+	}
+	
+	
 }
