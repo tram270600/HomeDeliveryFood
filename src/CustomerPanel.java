@@ -57,7 +57,11 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		setLayout(null);
 
 		//frame.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-
+		Icon iconActivity = new ImageIcon("D:\\btnActivity.png");
+		Icon iconMail = new ImageIcon("D:\\btnMail.png");
+		Icon iconHelp = new ImageIcon("D:\\btnHelp.png");
+		Icon iconSettings = new ImageIcon("D:\\btnCusSetting.png");
+		
 		JPanel account = new JPanel();
 		account.setBounds(5, 160, 530, 150);
 		account.setLayout(null);
@@ -99,19 +103,19 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		btnBack.setBounds(10, 10, 70, 25);
 		btnBack.addActionListener(this);
 
-		btnSettings = new JButton("Settings");
+		btnSettings = new JButton(iconSettings);
 		btnSettings.setBounds(1085, 10, 50, 50);
 		btnSettings.addActionListener(this);
 
-		btnHelp = new JButton("Help");
+		btnHelp = new JButton(iconHelp);
 		btnHelp.setBounds(1020, 10, 50, 50);
 		btnHelp.addActionListener(this);
 
-		btnMailbox = new JButton("Mailbox");
+		btnMailbox = new JButton(iconMail);
 		btnMailbox.setBounds(955, 10, 50, 50);
 		btnMailbox.addActionListener(this);
 
-		btnActivity = new JButton("Activity");
+		btnActivity = new JButton(iconActivity);
 		btnActivity.setBounds(890, 10, 50, 50);
 		btnActivity.addActionListener(this);
 
@@ -269,6 +273,20 @@ public class CustomerPanel extends JPanel implements ActionListener {
 
 		btnHistory = new JButton("Order history");
 		btnHistory.setBounds(180, 40, 130, 25);
+		btnHistory.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e)
+		    {
+		    	OrderHistory o = new OrderHistory();
+		    	o.orderScreen();
+		    	MenuImage m;
+//				try {
+//					m = new MenuImage();
+//				} catch (SQLException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//		    	MenuImage.orderScreen();
+		    }});
 		activityFrame.add(btnHistory);
 
 		btnStatus = new JButton("Delivery status");
@@ -283,38 +301,109 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		passwordFrame.setVisible(true);
 		passwordFrame.setResizable(false);
 
-
+		
 		JLabel currentPassword = new JLabel("Current Password");
 		currentPassword.setFont(new Font("Arial", Font.PLAIN, 15));
 		currentPassword.setBounds(10, 10, 130, 15);
 		passwordFrame.add(currentPassword);
-
-		currentText = new JTextField();
+		
+		currentText = new JPasswordField();
 		currentText.setBounds(160, 10, 300, 20);
 		passwordFrame.add(currentText);
-
+		
 		JLabel newPassword = new JLabel("New Password");
 		newPassword.setFont(new Font("Arial", Font.PLAIN, 15));
 		newPassword.setBounds(10, 40, 100, 15);
 		passwordFrame.add(newPassword);	
-
-		newText = new JTextField();
+		
+		newText = new JPasswordField();
 		newText.setBounds(160, 40, 300, 20);
 		passwordFrame.add(newText);
-
+		
 		JLabel confirm = new JLabel("Confirm Password");
 		confirm.setFont(new Font("Arial", Font.PLAIN, 15));
 		confirm.setBounds(10, 70, 135, 15);
 		passwordFrame.add(confirm);	
-
-		confirmText = new JTextField();
+		
+		confirmText = new JPasswordField();
 		confirmText.setBounds(160, 70, 300, 20);
 		passwordFrame.add(confirmText);
-
+		
+		errorMessage = new JLabel();
+		errorMessage.setFont(new Font("Arial", Font.BOLD, 15));
+		errorMessage.setSize(75, 50);
+		errorMessage.setLocation(140, 100);
+		passwordFrame.add(errorMessage);
+		
 		btnChangePassword = new JButton("Change");
 		btnChangePassword.setBounds(205,140, 90, 25);
+		btnChangePassword.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e)
+		    {
+		    	try {
+					changePassword();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+		    }});
 		passwordFrame.add(btnChangePassword);
 	}
+	public void changePassword() throws Exception {
+		char[] oldPassword = currentText.getPassword();
+		char[] newPassword = newText.getPassword();
+		char[] confirmPassword = confirmText.getPassword();
+		
+    	String old = new String(oldPassword);
+    	String neww = new String(newPassword);
+    	String confirm = new String(confirmPassword);
+    	
+    	if ((old.length() == 0))
+    		errorMessage.setText("Please, enter the current password");
+		if ((old.length() == 0) && (neww.length() == 0))
+			errorMessage.setText("Please, enter the current and new password");
+		if ((confirm.length() == 0))
+			errorMessage.setText("Please, confirm the new password");
+		if ((old.length() != 0) && (neww.length() != 0) && (confirm.length() != 0)) {
+			char[] currentpassword = currentText.getPassword();
+			String cPassword = "";
+			for (int i = 0; i < currentpassword.length; i++) {
+				cPassword += currentpassword[i];
+			}
+			
+			char[] newpassword = newText.getPassword();
+			String nPassword = "";
+			for (int i = 0; i < newpassword.length; i++) {
+				nPassword += newpassword[i];
+			}
+			char[] confirmpassword = newText.getPassword();
+			String cfPassword = "";
+			for (int i = 0; i < confirmpassword.length; i++) {
+				cfPassword += confirmpassword[i];
+			}
+			try {
+				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+				String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
+				connection = DriverManager.getConnection(connectionURL, "sa","hai01256445678");
+				System.out.println("Success");
+				if ((JavaConnect2Sql.searchInfo(SignInPanel.getUsername(), cPassword) == true) 
+						&&  nPassword.equals(cfPassword) == true) {
+					System.out.println(SignInPanel.getUsername());
+					PreparedStatement st = (PreparedStatement) connection
+	                        .prepareStatement("UPDATE Users set Password= ? where Username='" + SignInPanel.getUsername()+"'");
+					st.setString(1, cfPassword);
+                    st.executeUpdate();
+                    System.out.println("Saved");
+				} else {
+					System.out.println("Failed");
+				}
+			} catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+            }
+		}
+		
+			
+	}
+	
 	public void mailbox() {
 		mailFrame = new JFrame("Mail");
 		mailFrame.setBounds(500, 200, 500, 300);
@@ -332,48 +421,99 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		mailFrame.add(btnDelete);	
 	}
 	public void edit() {
-		editFrame = new JFrame("Edit Information");
+			editFrame = new JFrame("Edit Information");
 		editFrame.setBounds(500, 200, 500, 300);
 		editFrame.getContentPane().setLayout(null);
 		editFrame.setVisible(true);
-
+		
 		JLabel phone = new JLabel("phone number");
 		phone.setFont(new Font("Arial", Font.PLAIN, 15));
 		phone.setBounds(10, 10, 100, 15);
 		editFrame.add(phone);
-
+		
 		phoneText = new JTextField();
 		phoneText.setBounds(160, 10, 300, 20);
 		editFrame.add(phoneText); 
-
+		
 		JLabel address = new JLabel("address");
 		address.setFont(new Font("Arial", Font.PLAIN, 15));
 		address.setBounds(10, 40, 100, 15);
 		editFrame.add(address);
-
+		
 		addressText = new JTextField();
 		addressText.setBounds(160, 40, 300, 20);
 		editFrame.add(addressText); 
-
-		JLabel name = new JLabel("username");
+		
+		JLabel name = new JLabel("name");
 		name.setFont(new Font("Arial", Font.PLAIN, 15));
 		name.setBounds(10, 70, 100, 15);
 		editFrame.add(name);
-
+		
 		nameText = new JTextField();
 		nameText.setBounds(160, 70, 300, 20);
 		editFrame.add(nameText); 
-
+		
 		JButton btnChange = new JButton("Change");
 		btnChange.setBounds(160, 200, 150, 25);
 		editFrame.add(btnChange);
 		btnChange.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e)
 		    {
-
+		    	try {
+					editProfile();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 		    }
 		    });
 	}
+		public void editProfile() throws Exception {
+		String phoneNo = phoneText.getText();
+		String addr = addressText.getText();
+		String cusName = nameText.getText();
+		 	
+
+		if ((phoneNo.length() != 0) && (addr.length() != 0) && (cusName.length() != 0)) {
+			try {
+				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+				String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
+				connection = DriverManager.getConnection(connectionURL, "sa","hai01256445678");
+
+					System.out.println(SignInPanel.getUsername());
+					PreparedStatement st1 = (PreparedStatement) connection
+	                        .prepareStatement("UPDATE Customer set CusName= ? where CusNo= (SELECT C.CusNo"
+	                        								+" FROM Customer C, Users U"
+	                        								+" WHERE U.Username ='"  + SignInPanel.getUsername() + "'"
+	                        								+" AND U.UserID = C.UserID)");
+	                        	
+		    st1.setString(1, cusName);
+                    st1.executeUpdate();
+                    
+                    PreparedStatement st2 = (PreparedStatement) connection
+	                        .prepareStatement("UPDATE Customer set CusPhone= ? where CusNo= (SELECT C.CusNo"
+	                        								+" FROM Customer C, Users U"
+	                        								+" WHERE U.Username ='"  + SignInPanel.getUsername() + "'"
+	                        								+" AND C.UserID = U.UserID)");
+                    st2.setString(1, phoneNo);
+                    st2.executeUpdate();
+                    
+                    PreparedStatement st3 = (PreparedStatement) connection
+	                        .prepareStatement("UPDATE Customer set CusAddress= ? where CusNo= (SELECT C.CusNo"
+	                        								+" FROM Customer C, Users U"
+	                        								+" WHERE U.Username ='"  + SignInPanel.getUsername() + "'"
+	                        								+" AND C.UserID = U.UserID)");
+                    st3.setString(1, addr);
+                    st3.executeUpdate();                
+                    System.out.println("Saved");				  
+				}
+			 catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+            }
+		}
+		
+			
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
