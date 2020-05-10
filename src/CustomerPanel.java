@@ -62,6 +62,11 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		Icon iconHelp = new ImageIcon("D:\\btnHelp.png");
 		Icon iconSettings = new ImageIcon("D:\\btnCusSetting.png");
 		
+		JLabel lblNewLabel_4 = new JLabel("");
+		lblNewLabel_4.setIcon(new ImageIcon("D:\\CustomerPanel.png"));
+		lblNewLabel_4.setBounds(0, 0, 1200, 575);
+		frame.getContentPane().add(lblNewLabel_4);
+		
 		JPanel account = new JPanel();
 		account.setBounds(5, 160, 530, 150);
 		account.setLayout(null);
