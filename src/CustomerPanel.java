@@ -35,16 +35,24 @@ public class CustomerPanel extends JPanel implements ActionListener {
 	JTextField textArea, currentText, newText,
 			   nameText, addressText, phoneText,
 		       confirmText;
-	private JLabel cusName, phoneNumber, email, password,
-				   title, general, accountInfo, contact,
-				   reward,address, phone;
+	private JLabel password, errorMessage,
+				   title, phoneLabel, addressLabel,
+				   reward,address, phone, name;
 
-//	public Customer() {
-		// TODO Auto-generated constructor stub
-	public CustomerPanel(String cusName, String email) {
-		this.cusName = new JLabel(cusName);
-		this.email = new JLabel(email);
+	public Customer() {
 		CustomerComponent();
+	}
+	
+	public static int getCusNo() {
+		return cusNo;
+	}
+	
+	public static String getCusPhone() {
+		return cusPhone;
+	}
+	
+	public static String getCusAddress() {
+		return cusAddress;
 	}
 
 	public void CustomerComponent() {
@@ -71,7 +79,6 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		account.setBounds(5, 160, 530, 150);
 		account.setLayout(null);
 		account.setVisible(true);
-		account.setBorder(BorderFactory.createTitledBorder("Account"));	
 
 
 		title = new JLabel("Profile");
@@ -80,20 +87,23 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		title.setLocation(525, 25);
 
 
-		phone = new JLabel("Phone number");
-		phone.setFont(new Font("Arial", Font.PLAIN, 20));
-		phone.setSize(200, 80);
-		phone.setLocation(35, 160);
+		JLabel phoneLabel = new JLabel("Phone number");
+		phoneLabel.setFont(new Font("Cooper Black", Font.BOLD, 17));
+		phoneLabel.setSize(150, 50);
+		phoneLabel.setLocation(20, 175);
+		frame.add(phoneLabel);
+		
+		JLabel addressLabel = new JLabel("Address");
+		addressLabel.setFont(new Font("Cooper Black", Font.BOLD, 17));
+		addressLabel.setSize(120, 50);
+		addressLabel.setLocation(20, 215);
+		frame.add(addressLabel);
 
 		reward = new JLabel("rewards");
 		reward.setFont(new Font("Arial", Font.PLAIN, 20));
 		reward.setSize(200, 80);
 		reward.setLocation(35, 240);
 
-		address = new JLabel("address");
-		address.setFont(new Font("Arial", Font.PLAIN, 20));
-		address.setSize(200, 80);
-		address.setLocation(35, 200);
 
 		cusName.setFont(new Font("Cooper Black", Font.BOLD, 20));
 		cusName.setSize(500, 50);
@@ -142,11 +152,9 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		btnLogout = new JButton("Log out");
 		btnLogout.setBounds(1035, 195, 100, 25);
 
+		displayProfile();
 		add(title);
-		add(phone);
 		add(reward);
-
-		add(address);
 		add(cusName);
 		add(email);
 
@@ -175,23 +183,23 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		settingFrame.getContentPane().setLayout(null);
 		settingFrame.setVisible(true);
 		settingFrame.setResizable(false);
-
+		
 		btnPrivacy = new JButton("Privacy");
 		btnPrivacy.setBounds(190, 70, 120, 50);
 		settingFrame.add(btnPrivacy);
-
+		
 		JButton btnLanguage = new JButton("Language");
 		btnLanguage.setBounds(190, 150, 120, 50);
 		settingFrame.add(btnLanguage);
 	}
-
+	
 	public void help() {
 		helpFrame = new JFrame("Help Center");
 		helpFrame.setBounds(500, 200, 500, 300);
 		helpFrame.getContentPane().setLayout(null);
 		helpFrame.setVisible(true);
 		helpFrame.setResizable(false);
-
+		
 		btnAbout = new JButton("About Us");
 		btnAbout.setBounds(10, 90, 200, 25);
 		helpFrame.add(btnAbout);
@@ -203,7 +211,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		    	about.getContentPane().setLayout(null);
 		    	about.setVisible(true);
 		    	about.setResizable(false);
-
+		    	
 		    	 JTextArea textArea = new JTextArea(
 		                 "If there is anything the nonconformist hates worse " +
 		                 "than a conformist, it's another nonconformist who " +
@@ -216,15 +224,15 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		         textArea.setWrapStyleWord(true);
 		         textArea.setOpaque(false);
 		         textArea.setEditable(false);
-
+		         
 		         about.add(textArea);
 		    }
 		    });
-
+		
 		btnReport = new JButton("Report Problems");
 		btnReport.setBounds(10, 130, 200, 25);
 		helpFrame.add(btnReport);
-
+		
 		btnTerms = new JButton("Terms & Services");
 		btnTerms.setBounds(10, 170, 200, 25);
 		btnTerms.addActionListener(new ActionListener() {
@@ -235,7 +243,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		    	terms.getContentPane().setLayout(null);
 		    	terms.setVisible(true);
 		    	terms.setResizable(false);
-
+		    	
 		    	JTextArea textArea = new JTextArea(
 		                 "If you reside outside of the Socialist Republic of Vietnam, " +
 		                 "the terms of this agreement govern the relationship between" +
@@ -249,33 +257,33 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		         textArea.setWrapStyleWord(true);
 		         textArea.setOpaque(false);
 		         textArea.setEditable(false);
-
+		         
 		         terms.add(textArea);
 		    }
 		    });
 		helpFrame.add(btnTerms);
-
+		
 		JLabel helpLabel = new JLabel("How can we help you?");
 		helpLabel.setFont(new Font("Arial", Font.PLAIN, 15));
 		helpLabel.setBounds(160, 10, 200, 15);
 		helpFrame.add(helpLabel);
-
+		
 	    textArea = new JTextField();
 		textArea.setBounds(80, 40, 300, 30);
 		helpFrame.add(textArea);
 	}
-
-	public void activity() {
+	
+	public static void activity() {
 		activityFrame = new JFrame("Activity");
 		activityFrame.setBounds(500, 200, 500, 300);
 		activityFrame.getContentPane().setLayout(null);
 		activityFrame.setVisible(true);
 		activityFrame.setResizable(false);
-
+		
 		btnPlace = new JButton("Saved places");
 		btnPlace.setBounds(180, 140, 130, 25);
 		activityFrame.add(btnPlace);
-
+		
 		btnHistory = new JButton("Order history");
 		btnHistory.setBounds(180, 40, 130, 25);
 		btnHistory.addActionListener(new ActionListener() {
@@ -283,7 +291,14 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		    {
 		    	OrderHistory o = new OrderHistory();
 		    	o.orderScreen();
-		    	MenuImage m;
+		    	activityFrame.dispose();
+//		    	RestaurantTable rt = new RestaurantTable();
+//		    	rt.orderScreen();
+//		    	
+//		    	FoodTable f = new FoodTable();
+//		    	f.orderScreen();
+		    	
+//		    	MenuImage m;
 //				try {
 //					m = new MenuImage();
 //				} catch (SQLException e1) {
@@ -291,14 +306,15 @@ public class CustomerPanel extends JPanel implements ActionListener {
 //					e1.printStackTrace();
 //				}
 //		    	MenuImage.orderScreen();
+		    	
 		    }});
 		activityFrame.add(btnHistory);
-
+		
 		btnStatus = new JButton("Delivery status");
 		btnStatus.setBounds(180, 90, 130, 25);
 		activityFrame.add(btnStatus);
 	}
-
+	
 	public void password() {
 		passwordFrame = new JFrame("Password Modify");
 		passwordFrame.setBounds(500, 200, 500, 200);
@@ -336,23 +352,83 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		
 		errorMessage = new JLabel();
 		errorMessage.setFont(new Font("Arial", Font.BOLD, 15));
-		errorMessage.setSize(75, 50);
+		errorMessage.setSize(250, 50);
 		errorMessage.setLocation(140, 100);
 		passwordFrame.add(errorMessage);
 		
 		btnChangePassword = new JButton("Change");
-		btnChangePassword.setBounds(205,140, 90, 25);
+		btnChangePassword.setBounds(140,140, 90, 25);
 		btnChangePassword.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e)
 		    {
-		    	try {
+		    	//passwordFrame.setVisible(false);
+		    	try {	
 					changePassword();
+					JOptionPane.showMessageDialog(null, "Saved");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 		    }});
 		passwordFrame.add(btnChangePassword);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.setBounds(260,140, 90, 25);
+		btnBack.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e)
+		    {
+		    	passwordFrame.dispose();
+		    }});
+		passwordFrame.add(btnBack);
 	}
+	
+	public void displayProfile(){
+		Connection connection = null;
+		try{
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
+			connection = DriverManager.getConnection(connectionURL, "sa", "hai01256445678");
+			String query1 = "SELECT * FROM Customer WHERE CusNo = (SELECT C.CusNo"
+																+ " FROM Customer C, Users U"
+																+ " WHERE U.Username = '" + SignInPanel.getUsername()
+																+ "' AND U.UserID = C.UserID)";
+			System.out.println(query1);
+			Statement st = connection.createStatement();
+			ResultSet rs = st.executeQuery(query1);
+		
+			while (rs.next()) {
+				int id = rs.getInt("CusNo");	
+				String nameText = rs.getString("CusName");	
+				String phoneText = rs.getString("CusPhone");
+				String addressText = rs.getString("CusAddress");
+				
+				
+				cusNo = id;
+				cusAddress = addressText;
+				cusPhone = phoneText;
+				System.out.println(getCusNo());
+				name = new JLabel(nameText);
+				name.setFont(new Font("Cooper Black", Font.BOLD, 20));
+				name.setSize(500, 50);
+				name.setLocation(10, 80);
+				frame.add(name);
+				 
+				phone = new JLabel(phoneText);
+				phone.setFont(new Font("Arial", Font.PLAIN, 20));
+				phone.setSize(200, 80);
+				phone.setLocation(400, 160);
+				frame.add(phone);
+				
+				address = new JLabel(addressText);
+				address.setFont(new Font("Arial", Font.PLAIN, 20));
+				address.setSize(200, 80);
+				address.setLocation(400, 200);	
+				frame.add(address);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e);
+		}
+		}
+	
 	public void changePassword() throws Exception {
 		char[] oldPassword = currentText.getPassword();
 		char[] newPassword = newText.getPassword();
@@ -362,12 +438,14 @@ public class CustomerPanel extends JPanel implements ActionListener {
     	String neww = new String(newPassword);
     	String confirm = new String(confirmPassword);
     	
-    	if ((old.length() == 0))
-    		errorMessage.setText("Please, enter the current password");
-		if ((old.length() == 0) && (neww.length() == 0))
-			errorMessage.setText("Please, enter the current and new password");
-		if ((confirm.length() == 0))
-			errorMessage.setText("Please, confirm the new password");
+    	if ((old.length() == 0) || (neww.length() == 0) || (confirm.length() == 0))
+    		errorMessage.setText("Please, fulfill the information");
+    	if ((old.length() == 0) && (neww.length() == 0) )
+		errorMessage.setText("Please, fulfill the information");
+    	if ((old.length() == 0) && (confirm.length() == 0) )
+    	errorMessage.setText("Please, fulfill the information");
+    	if ((neww.length() == 0) && (confirm.length() == 0) )
+        	errorMessage.setText("Please, fulfill the information");
 		if ((old.length() != 0) && (neww.length() != 0) && (confirm.length() != 0)) {
 			char[] currentpassword = currentText.getPassword();
 			String cPassword = "";
@@ -409,24 +487,25 @@ public class CustomerPanel extends JPanel implements ActionListener {
 			
 	}
 	
+	
 	public void mailbox() {
 		mailFrame = new JFrame("Mail");
 		mailFrame.setBounds(500, 200, 500, 300);
 		mailFrame.getContentPane().setLayout(null);
 		mailFrame.setVisible(true);
 
-
+		
 		JLabel inbox = new JLabel("Inbox");
 		inbox.setFont(new Font("Arial", Font.PLAIN, 15));
 		inbox.setBounds(225, 10, 100, 15);
 		mailFrame.add(inbox);	
-
+		
 		btnDelete = new JButton("Delete");
 		btnDelete.setBounds(400,10,70,20);
 		mailFrame.add(btnDelete);	
 	}
 	public void edit() {
-			editFrame = new JFrame("Edit Information");
+		editFrame = new JFrame("Edit Information");
 		editFrame.setBounds(500, 200, 500, 300);
 		editFrame.getContentPane().setLayout(null);
 		editFrame.setVisible(true);
@@ -466,13 +545,24 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		    {
 		    	try {
 					editProfile();
+					JOptionPane.showMessageDialog(null, "Saved");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 		    }
 		    });
+		JButton btnOK = new JButton("OK");
+		btnOK.setBounds(315, 200, 150, 25);
+		editFrame.add(btnOK);
+		btnOK.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e)
+		    {
+		    	editFrame.dispose();
+		    }
+		    });
 	}
-		public void editProfile() throws Exception {
+	
+	public void editProfile() throws Exception {
 		String phoneNo = phoneText.getText();
 		String addr = addressText.getText();
 		String cusName = nameText.getText();
@@ -487,45 +577,42 @@ public class CustomerPanel extends JPanel implements ActionListener {
 					System.out.println(SignInPanel.getUsername());
 					PreparedStatement st1 = (PreparedStatement) connection
 	                        .prepareStatement("UPDATE Customer set CusName= ? where CusNo= (SELECT C.CusNo"
-	                        								+" FROM Customer C, Users U"
-	                        								+" WHERE U.Username ='"  + SignInPanel.getUsername() + "'"
-	                        								+" AND U.UserID = C.UserID)");
+	                        																+" FROM Customer C, Users U"
+	                        																+" WHERE U.Username ='"  + SignInPanel.getUsername() + "'"
+	                        																+" AND U.UserID = C.UserID)");
 	                        	
-		    st1.setString(1, cusName);
+					st1.setString(1, cusName);
                     st1.executeUpdate();
                     
                     PreparedStatement st2 = (PreparedStatement) connection
 	                        .prepareStatement("UPDATE Customer set CusPhone= ? where CusNo= (SELECT C.CusNo"
-	                        								+" FROM Customer C, Users U"
-	                        								+" WHERE U.Username ='"  + SignInPanel.getUsername() + "'"
-	                        								+" AND C.UserID = U.UserID)");
-                    st2.setString(1, phoneNo);
+	                        																+" FROM Customer C, Users U"
+	                        																+" WHERE U.Username ='"  + SignInPanel.getUsername() + "'"
+	                        																+" AND C.UserID = U.UserID)");
+                	st2.setString(1, phoneNo);
                     st2.executeUpdate();
                     
                     PreparedStatement st3 = (PreparedStatement) connection
 	                        .prepareStatement("UPDATE Customer set CusAddress= ? where CusNo= (SELECT C.CusNo"
-	                        								+" FROM Customer C, Users U"
-	                        								+" WHERE U.Username ='"  + SignInPanel.getUsername() + "'"
-	                        								+" AND C.UserID = U.UserID)");
+	                        																+" FROM Customer C, Users U"
+	                        																+" WHERE U.Username ='"  + SignInPanel.getUsername() + "'"
+	                        																+" AND C.UserID = U.UserID)");
                     st3.setString(1, addr);
                     st3.executeUpdate();                
-                    System.out.println("Saved");				  
+                    System.out.println("Saved");
+				  
 				}
 			 catch (SQLException sqlException) {
                 sqlException.printStackTrace();
             }
-		}
-		
-			
+		} 
 	}
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		//String text = textArea.getText();
-
+		
 		if (e.getSource() == btnBack) {
-//			frame.dispose();
+			frame.dispose();
 		}
 		if (e.getSource() == btnSettings) {			
 			settings();
@@ -533,7 +620,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		if (e.getSource() == btnHelp) {			
 			help();
 		}
-
+		
 		if (e.getSource() == btnActivity) {			
 			activity();
 		}
@@ -543,9 +630,10 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		if (e.getSource() == btnMailbox) {			
 			mailbox();
 		}
-		if (e.getSource() == btnEdit) {			
+		if (e.getSource() == btnEdit) {	
+
 			edit();
 		}
-	}//actionPerformed
+	}
 
-}//Customer
+}
