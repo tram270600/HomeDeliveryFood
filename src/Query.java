@@ -20,7 +20,7 @@ public class Query {
 			RestaurantMenu r;
 			while (rs.next()) {
 				r = new RestaurantMenu(rs.getString("ResNo"),rs.getString("DishID"), rs.getString("DishName"), rs.getString("Category"),
-						rs.getInt("Price"), rs.getBytes("Image"), rs.getString("ResName"));
+						rs.getString("Price"), rs.getBytes("Image"), rs.getString("ResName"));
 				list.add(r);
 			}
 		} catch (Exception e) {
