@@ -39,7 +39,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 				   title, phoneLabel, addressLabel,
 				   reward,address, phone, name;
 
-	public Customer() {
+	public CustomerPanel() {
 		CustomerComponent();
 	}
 	
