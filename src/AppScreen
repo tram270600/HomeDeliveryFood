@@ -1,0 +1,249 @@
+
+
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.Image;
+
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.sql.SQLException;
+import java.awt.event.ActionEvent;
+import java.awt.CardLayout;
+import java.awt.Color;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class AppScreen {
+
+	private JFrame frame;
+	private static JTextField textField;
+	ImageIcon img[];
+	JLabel piclabel;
+	JButton btnNext,btnPre;
+	int i = 0;
+	JPanel SliderPanel;
+	
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					AppScreen window = new AppScreen();
+					
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	
+	public AppScreen() {
+		initialize();
+	}
+
+	
+	public static String getText() {
+		String text = textField.getText();
+		return text;
+	}
+	
+	public static boolean isSearchingRes(String searchingText) throws SQLException {
+		String sqlSelect = "SELECT ResName FROM Restaurant WHERE CHARINDEX('" + searchingText + "', ResName) > 0";
+		System.out.println(sqlSelect);
+		String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
+	    try (	
+	    		Connection connection = DriverManager.getConnection(connectionURL, "sa", "hai01256445678");
+	            Statement st = connection.createStatement(
+	            ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	            ResultSet rs = st.executeQuery(sqlSelect);
+	        ) {
+	    	if(rs.next()) {
+			return true;}
+	        else return false;
+	}}
+	
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 1200, 600);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		Border blackline = BorderFactory.createLineBorder(Color.black);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(768, 0, 414, 553);
+		frame.getContentPane().add(panel);
+		panel.setLayout(null);
+		panel.setBorder(blackline);
+		
+		JPanel event1 = new JPanel();
+		event1.setBounds(0, 179, 414, 187);
+		panel.add(event1);
+		event1.setBorder(blackline);
+		
+		JPanel event2 = new JPanel();
+		event2.setBounds(0, 366, 414, 187);
+		panel.add(event2);
+		event2.setBorder(blackline);
+		
+		JButton btnNewButton = new JButton("New button");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnNewButton.setBounds(352, 13, 50, 50);
+		panel.add(btnNewButton);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(0, 0, 770, 148);
+		frame.getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		panel_1.setBorder(blackline);
+		
+		textField = new JTextField();
+		textField.setColumns(10);
+		textField.setBounds(93, 87, 247, 22);
+		panel_1.add(textField);
+		
+		JButton btnSearch_1 = new JButton("Search");
+		btnSearch_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if(isSearchingRes(getText()) == true) {
+						RestaurantTable r = RestaurantTable();
+						r.orderScreen();
+					} else {
+						FoodTable f = new FoodTable();
+						f.orderScreen();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnSearch_1.setBounds(395, 86, 97, 25);
+		panel_1.add(btnSearch_1);
+		
+		JPanel SliderPanel = new JPanel();
+		SliderPanel.setBounds(0, 148, 770, 404);
+		frame.getContentPane().add(SliderPanel);
+		SliderPanel.setLayout(null);
+		SliderPanel.setBorder(blackline);
+		
+		JLabel piclabel = new JLabel();
+		piclabel.setBounds(128, 92, 508, 267);
+		SliderPanel.add(piclabel);
+		
+		img = new ImageIcon[2]; 
+	    img[0] = new ImageIcon("D:\\ImageSource\\btnShipOrder.png");
+	    img[1] = new ImageIcon("D:\\ImageSource\\btnRating.png");
+		
+		btnPre=new JButton("<<");
+		btnPre.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				        if(i==0)
+				        {
+				          //System.out.println("this is the first image");
+				        	piclabel.setIcon(img[0]);
+				        }
+				        else
+				            {
+				            i=i-1;
+				            piclabel.setIcon(img[i]);
+				            }
+				        
+			}
+		});
+	    SliderPanel.setLayout(null);
+	    btnNext=new JButton(">>");	
+	    btnNext.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		System.out.println(img.length);
+	    	        if(i==img.length-1)
+	    	        {
+	    	        	  //System.out.println("this is the last image");
+	    	        	piclabel.setIcon(img[i]);
+	    	        	
+	    	        }
+	    	        else
+	    	            {
+	    	        	System.out.println(i);
+	    	            i=i+1;
+	    	            piclabel.setIcon(img[i]);
+	    	    }
+	    	}
+	    });
+	    
+	    SliderPanel.add(btnNext);
+	    btnNext.setBounds(690, 166, 56, 44);
+	    SliderPanel.add(btnPre);
+	    btnPre.setBounds(32, 166, 56, 44);
+	    
+	  
+	    
+	    
+//	    JLabel piclabel = new JLabel();
+//	    piclabel.setBounds(128, 92, 508, 267);
+//	    SliderPanel.add(piclabel);
+//	    piclabel.setIcon(img[0]);
+	}
+	
+	public void showImage() {
+		
+	}
+
+	/*public  void actionPerformed(ActionEvent e)
+	{
+
+	    if(e.getSource()==btnNext)
+	    {
+	        if(i==0)
+	        {
+	        	
+	        }
+	        else
+	            {
+	            i=i-1;
+	            piclabel.setIcon(img[i]);
+	        }
+	    }
+	    if(e.getSource()==btnPre)
+	    {
+	        if(i==img.length-1)
+	        {
+	            JOptionPane.showMessageDialog(null,"This is LastImage");
+	        }
+	        else
+	            {
+	            i=i+1;
+	            piclabel.setIcon(img[i]);
+	            }
+	        }
+
+	     }*/
+
+
+		
+
+}
