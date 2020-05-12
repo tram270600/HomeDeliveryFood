@@ -102,8 +102,8 @@ public class ResSearchingScreen {
 				res = getRes.getText();
 				System.out.println(res);
 				System.out.println(number);
-				FoodTable f = new FoodTable();
-				f.orderScreen();
+				OrderScreen o = new OrderScreen();
+				o.orderScreen();
 				frame.setVisible(false);
 			}
 			});
