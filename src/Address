@@ -1,0 +1,18 @@
+
+public class Address {
+	private String receAddress, deliAddress;
+
+	public Address(String receAddress, String deliAddress) {
+		this.receAddress = receAddress;
+		this.deliAddress = deliAddress;
+	}
+
+	public String getReceAddress() {
+		return receAddress;
+	}
+
+	public String getDeliAddress() {
+		return deliAddress;
+	}
+
+}
