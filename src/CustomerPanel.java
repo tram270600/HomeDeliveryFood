@@ -102,18 +102,8 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		reward = new JLabel("rewards");
 		reward.setFont(new Font("Arial", Font.PLAIN, 20));
 		reward.setSize(200, 80);
-		reward.setLocation(35, 240);
-
-
-		cusName.setFont(new Font("Cooper Black", Font.BOLD, 20));
-		cusName.setSize(500, 50);
-		cusName.setLocation(10, 80);
-
-		email.setFont(new Font("Cooper Black", Font.BOLD, 15));
-		email.setSize(500, 40);
-		email.setLocation(10, 110);		
-
-
+		reward.setLocation(35, 240);		
+		
 		btnBack = new JButton("Back");
 		btnBack.setBounds(10, 10, 70, 25);
 		btnBack.addActionListener(this);
@@ -406,6 +396,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 				cusAddress = addressText;
 				cusPhone = phoneText;
 				System.out.println(getCusNo());
+				
 				name = new JLabel(nameText);
 				name.setFont(new Font("Cooper Black", Font.BOLD, 20));
 				name.setSize(500, 50);
