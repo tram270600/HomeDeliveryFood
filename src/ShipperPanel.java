@@ -10,7 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,8 +21,12 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -34,8 +40,9 @@ public class ShipperPanel extends JPanel implements ActionListener {
 	private JPanel Profile;
 	private JLabel errorMessage;
 	private JPasswordField passwordField,passwordField_1,passwordField_2;
-
-
+	private JLabel textArea, Status,Status1,Status2;
+	private JTable table;
+	private static String status;
 		
 
 	public ShipperPanel(String name, String phone) {
@@ -45,11 +52,23 @@ public class ShipperPanel extends JPanel implements ActionListener {
 	}
 
 	
+	public static String getStatus() {
+		return status;
+	}
+
+
+	public static void setStatus(String status) {
+		ShipperPanel.status = status;
+	}
+
+
 	public void ShipperPanelComponent() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 1200, 600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+//		frame = new JFrame();
+//		frame.setBounds(100, 100, 1200, 600);
+//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.getContentPane().
+		setLayout(null);
+		Border blackline = BorderFactory.createLineBorder(Color.black);
 		
 		//password frame
 		passwordframe = new JFrame();
@@ -75,6 +94,10 @@ public class ShipperPanel extends JPanel implements ActionListener {
 		current.setBounds(38, 69, 128, 16);
 		passwordframe.getContentPane().add(current);
 		
+		JLabel ReenterPassword = new JLabel("Re-Enter Password");
+		ReenterPassword.setBounds(38, 139, 128, 16);
+		passwordframe.getContentPane().add(ReenterPassword);
+		
 		errorMessage = new JLabel();
 		errorMessage.setBounds(188, 166, 56, 16);
 		passwordframe.getContentPane().add(errorMessage);
@@ -86,13 +109,23 @@ public class ShipperPanel extends JPanel implements ActionListener {
 		JButton btnDone = new JButton("Done");
 		btnDone.setBounds(165, 185, 97, 25);
 		passwordframe.getContentPane().add(btnDone);
+		btnDone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					changePassword(SignInPanel.getUsername());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		
 		
 		
 		JLayeredPane layeredPane = new JLayeredPane();
 		layeredPane.setVisible(false);
 		layeredPane.setBounds(119, 92, 893, 427);
-		frame.getContentPane().add(layeredPane);
+		//frame.getContentPane().
+		add(layeredPane);
 		layeredPane.setLayout(new CardLayout(0, 0));
 		
 	
@@ -101,6 +134,7 @@ public class ShipperPanel extends JPanel implements ActionListener {
 		layeredPane.add(TransactionHistory);
 		TransactionHistory.setLayout(null);
 		TransactionHistory.setVisible(false);
+		TransactionHistory.setBackground(new Color(255,255,255,200));
 		
 		JLabel lblNewLabel = new JLabel("History");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -116,34 +150,14 @@ public class ShipperPanel extends JPanel implements ActionListener {
 		layeredPane.add(Order);
 		Order.setVisible(false);
 		Order.setLayout(null);
-		
-		JLabel reAdd = new JLabel("Receiving Address");
-		reAdd.setBounds(22, 0, 322, 563);
-		reAdd.setHorizontalAlignment(SwingConstants.CENTER);
-		reAdd.setVerticalAlignment(SwingConstants.TOP);
-		reAdd.setFont(new Font("Castellar", Font.PLAIN, 18));
-		Order.add(reAdd);
-		
-		JLabel deliAdd = new JLabel("Delivery Address");
-		deliAdd.setBounds(437, 0, 303, 553);
-		deliAdd.setVerticalAlignment(SwingConstants.TOP);
-		deliAdd.setHorizontalAlignment(SwingConstants.CENTER);
-		deliAdd.setFont(new Font("Castellar", Font.PLAIN, 18));
-		Order.add(deliAdd);
-		
-		JTextArea ReAddress = new JTextArea();
-		ReAddress.setBounds(12, 38, 332, 515);
-		Order.add(ReAddress);
-		
-		JTextArea DeAddress = new JTextArea();
-		DeAddress.setBounds(437, 38, 332, 515);
-		Order.add(DeAddress);
+		Order.setBackground(new Color(255,255,255,200));
 		
 		//add components to rating panel
 		JPanel Rating = new JPanel();
 		layeredPane.add(Rating, "name_1060048078321400");
 		Rating.setLayout(null);
 		Rating.setVisible(false);
+		Rating.setBackground(new Color(255,255,255,200));
 		
 		
 		JCheckBox vbad = new JCheckBox("Very Bad");
@@ -231,9 +245,10 @@ public class ShipperPanel extends JPanel implements ActionListener {
 		
 		//add components to Profile panel
 		Profile = new JPanel();
-		layeredPane.add(Profile, "name_952108973165600");
+		layeredPane.add(Profile);
 		Profile.setLayout(null);
 		Profile.setVisible(false);
+		Profile.setBackground(new Color(255,255,255,200));
 		
 		name.setFont(new Font("Cooper Black", Font.BOLD, 50)); 
 	    name.setSize(500, 50); 
@@ -250,9 +265,6 @@ public class ShipperPanel extends JPanel implements ActionListener {
 		lblNewLabel_1.setBounds(122, 37, 87, 16);
 		Profile.add(lblNewLabel_1);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setBounds(12, 79, 292, 457);
-		Profile.add(textArea);
 		
 		JButton btnEditProfile = new JButton("EditProfile");
 		btnEditProfile.setBounds(410, 120, 140, 25);
@@ -261,29 +273,12 @@ public class ShipperPanel extends JPanel implements ActionListener {
 		JButton btnChangePassword = new JButton("ChangePassword");
 		btnChangePassword.setBounds(410, 78, 140, 25);
 		Profile.add(btnChangePassword);
-		
-		JToggleButton btnStatus = new JToggleButton("Available");
-		btnStatus.setToolTipText("");
-		btnStatus.setBounds(615, 79, 137, 67);
-		Profile.add(btnStatus);
-		btnStatus.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(btnStatus.isSelected()) {
-				btnStatus.setText("Busy");
-			}
-				else
-				btnStatus.setText("Available");
-			}
-		});
-		
 		btnChangePassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				passwordframe.setVisible(true);
 			}
 		});
-		
-		
-		
+	
 		JButton btnHistory = new JButton();
 		btnHistory.setIcon(new ImageIcon("D:\\ImageSource\\btntransactionHistory.png"));
 		btnHistory.addActionListener(new ActionListener() {
@@ -297,7 +292,8 @@ public class ShipperPanel extends JPanel implements ActionListener {
 		});
 		btnHistory.setFont(new Font("Castellar", Font.PLAIN, 10));
 		btnHistory.setBounds(934, 0, 50, 50);
-		frame.getContentPane().add(btnHistory);
+		//frame.getContentPane().
+		add(btnHistory);
 		
 		
 		JButton btnOrder = new JButton();
@@ -309,11 +305,14 @@ public class ShipperPanel extends JPanel implements ActionListener {
 				TransactionHistory.setVisible(false);
 				Rating.setVisible(false);
 				Profile.setVisible(false);
+				table t = new table();
+				t.Screen();
 			}
 		});
 		btnOrder.setFont(new Font("Castellar", Font.PLAIN, 10));
 		btnOrder.setBounds(749, 0, 50, 50);
-		frame.getContentPane().add(btnOrder);
+		//frame.getContentPane().
+		add(btnOrder);
 		
 		JButton btnRating = new JButton("Rating ");
 		btnRating.setIcon(new ImageIcon("D:\\ImageSource\\btnRating.png"));
@@ -324,12 +323,15 @@ public class ShipperPanel extends JPanel implements ActionListener {
 				TransactionHistory.setVisible(false);
 				Rating.setVisible(true);
 				Profile.setVisible(false);
+				ConfirmScreen CS = new ConfirmScreen();
+				CS.screen();
 				
 			}
 		});
 		btnRating.setFont(new Font("Castellar", Font.PLAIN, 10));
 		btnRating.setBounds(872, 0, 50, 50);
-		frame.getContentPane().add(btnRating);
+		//frame.getContentPane().
+		add(btnRating);
 		
 		JButton btnProfile = new JButton("Profile");
 		btnProfile.setIcon(new ImageIcon("D:\\ImageSource\\btnProfile.png"));
@@ -340,17 +342,58 @@ public class ShipperPanel extends JPanel implements ActionListener {
 				TransactionHistory.setVisible(false);
 				Rating.setVisible(false);
 				Profile.setVisible(true);
+				displayShipper();
+				
+				if(ConfirmScreen.getClick() == false) {
+					Status = new JLabel("available");
+					Status.setBounds(615, 79, 137, 67);
+					Status.setBorder(blackline);
+					Status.setVisible(true);
+					Profile.add(Status);
+					
+				} 
+				else {
+					Status1 = new JLabel("busy");
+					Status1.setBounds(615, 79, 137, 67);
+					Status1.setBorder(blackline);
+					Status1.setVisible(true);
+					Status.setVisible(false);			
+					Profile.add(Status1);
+
+				
+			}
+				if(ConfirmScreen.getClicked() == true) {
+					Status.setVisible(true);
+					Status1.setVisible(false);
+				} 
+
+				
+				
+		}});
+		
+		JButton btnOk = new JButton("OK");
+		btnOk.setBounds(628, 176, 97, 25);
+		Profile.add(btnOk);
+		btnOk.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Profile.setVisible(false);
 			}
 		});
+		
 		btnProfile.setFont(new Font("Castellar", Font.PLAIN, 10));
 		btnProfile.setBounds(812, 0, 50, 50);
-		frame.getContentPane().add(btnProfile);
+		//frame.getContentPane().
+		add(btnProfile);
 		
 		JLabel lblNewLabel_2 = new JLabel("New label");
 		lblNewLabel_2.setIcon(new ImageIcon("D:\\ImageSource\\ShipperPanel.png"));
 		lblNewLabel_2.setBounds(0, 0, 1182, 553);
-		frame.getContentPane().add(lblNewLabel_2);
+		//frame.getContentPane().
+		add(lblNewLabel_2);
 	}
+	
+
+	
 	public void changePassword(String name) throws Exception {
 		char[] oldPassword = passwordField.getPassword();
 		char[] newPassword = passwordField_1.getPassword();
@@ -388,7 +431,7 @@ public class ShipperPanel extends JPanel implements ActionListener {
 				System.out.println("Success");
 				if ((JavaConnect2SQL.searchInfo(name, cPassword) == true) &&  nPassword.equals(cfPassword) == true) {
 					PreparedStatement st = (PreparedStatement) connection
-	                        .prepareStatement("UPDATE Shipper set Password= ? where Username='" + SignInPanel.getUsername()+"'");
+	                        .prepareStatement("UPDATE Users set Password= ? where Username='" + SignInPanel.getUsername()+"'");
 					st.setString(1, cfPassword);
                     st.executeUpdate();
 				}
@@ -405,35 +448,39 @@ public class ShipperPanel extends JPanel implements ActionListener {
 			String connectionURL = "jdbc:sqlserver://DESKTOP-1TFES8J:1433;databaseName=MidTerm;integratedSecurity=true";
 			connection = DriverManager.getConnection(connectionURL, "sa", "leanhkhoa1602");
 			String query1 = "SELECT * FROM Shipper WHERE ShipNo = (SELECT S.ShipNo"
-															+ " FROM Shipper S, Users U"
-															+ " WHERE U.Username = '" + SignInPanel.getUsername()
-															+ "' AND U.UserID = S.UserID)";
+					+ " FROM Shipper S, Users U"
+					+ " WHERE U.Username = '" + SignInPanel.getUsername()
+					+ "' AND U.UserID = S.UserID)";
 			System.out.println(query1);
 			Statement st = connection.createStatement();
 			ResultSet rs = st.executeQuery(query1);
 		
 			while (rs.next()) {
+				int no = rs.getInt("UserID");
 				String id = rs.getString("ShipNo");	
+				String nameText = rs.getString("ShipName");	
+				String phone = rs.getString("ShipPhone");
 				String gender = rs.getString("ShipGender");
 				String dob = rs.getString("ShipDoB");
 				String address = rs.getString("ShipAddress");
 				
+				textArea = new JLabel(nameText);				
+				textArea.setBounds(12, 80, 100, 50);
+				Profile.add(textArea);
+				
 				genderLabel = new JLabel(gender);
-				genderLabel.setFont(new Font("Cooper Black", Font.BOLD, 50)); 
-				genderLabel.setSize(500, 50); 
-				genderLabel.setLocation(100,80); 
-			    Profile.add(name);
+				genderLabel.setSize(100, 50); 
+				genderLabel.setLocation(12,130); 
+			    Profile.add(genderLabel);
 			    
 			    dobLabel = new JLabel(dob);
-			    dobLabel.setFont(new Font("Cooper Black", Font.BOLD, 50)); 
-			    dobLabel.setSize(500, 50); 
-			    dobLabel.setLocation(100,110); 
+			    dobLabel.setSize(100, 50); 
+			    dobLabel.setLocation(12,180); 
 			    Profile.add(dobLabel);
 			    
-			    addressLabel = new JLabel(address);
-			    addressLabel.setFont(new Font("Cooper Black", Font.BOLD, 50)); 
-			    addressLabel.setSize(500, 50); 
-			    addressLabel.setLocation(100,140); 
+			    addressLabel = new JLabel(address);			  
+			    addressLabel.setSize(100, 50); 
+			    addressLabel.setLocation(12,230); 
 			    Profile.add(addressLabel);	
 			}
 		} catch (Exception e) {
