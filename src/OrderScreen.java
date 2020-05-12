@@ -13,7 +13,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class FoodTable {
+public class OrderScreen {
 
 	private JFrame frame;
 	private JTable table;
