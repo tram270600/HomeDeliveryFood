@@ -98,7 +98,7 @@ public class OrderScreen {
 			}
 		) {
 			Class[] columnTypes = new Class[] {
-				String.class, String.class, String.class, String.class, Integer.class, Byte.class, String.class, Integer.class
+				String.class, String.class, String.class, String.class, String.class, Byte.class, String.class, String.class
 			};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
@@ -118,7 +118,7 @@ public class OrderScreen {
 				int number = table.getSelectedRow();
 				System.out.println(number);
 				String qty = JOptionPane.showInputDialog("Enter amount");	
-				table.getModel().setValueAt(qty, number, 6);
+				table.getModel().setValueAt(qty, number, 7);
 			}
 		});
 		btnNewButton.setBounds(528, 250, 101, 23);
@@ -158,7 +158,7 @@ public class OrderScreen {
 				text6.setText((String) table.getValueAt(number,6));
 				String resName = text6.getText();
 				
-				text7.setText((String) table.getValueAt(number,6));
+				text7.setText((String) table.getValueAt(number,7));
 				String amount = text7.getText();
 //				System.out.println("T IN NE: "+ table.getValueAt(number,6));
 //				System.out.println("U nè: "+u);
