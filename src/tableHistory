@@ -1,0 +1,47 @@
+
+public class tableHistory {
+	private String Status, CustomerAddress, CustomerPhone, CustomerName, RestaurantAddress, RestaurantName;
+	int BillID,OrderID;
+	public String getStatus() {
+		return Status;
+	}
+	public String getCustomerAddress() {
+		return CustomerAddress;
+	}
+	
+	public String getCustomerPhone() {
+		return CustomerPhone;
+	}
+	
+	public String getCustomerName() {
+		return CustomerName;
+	}
+	
+	public String getRestaurantAddress() {
+		return RestaurantAddress;
+	}
+	
+	public String getRestaurantName() {
+		return RestaurantName;
+	}
+	
+	public int getBillID() {
+		return BillID;
+	}
+	
+	public int getOrderID() {
+		return OrderID;
+	}
+	
+	public tableHistory(String status, String customerAddress, String customerPhone, String customerName,
+			String restaurantAddress, String restaurantName, int billID, int orderID) {
+		Status = status;
+		CustomerAddress = customerAddress;
+		CustomerPhone = customerPhone;
+		CustomerName = customerName;
+		RestaurantAddress = restaurantAddress;
+		RestaurantName = restaurantName;
+		BillID = billID;
+		OrderID = orderID;
+	}
+}
