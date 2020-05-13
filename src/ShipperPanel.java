@@ -141,9 +141,6 @@ public class ShipperPanel extends JPanel implements ActionListener {
 		lblNewLabel.setBounds(269, 13, 137, 97);
 		TransactionHistory.add(lblNewLabel);
 		
-		JTextArea textArea_1 = new JTextArea();
-		textArea_1.setBounds(12, 86, 881, 328);
-		TransactionHistory.add(textArea_1);
 		
 		//add components to Order panel
 		JPanel Order = new JPanel();
@@ -288,6 +285,8 @@ public class ShipperPanel extends JPanel implements ActionListener {
 				TransactionHistory.setVisible(true);
 				Rating.setVisible(false);
 				Profile.setVisible(false);
+				HistoryScreen h = new HistoryScreen();
+				h.display();
 			}
 		});
 		btnHistory.setFont(new Font("Castellar", Font.PLAIN, 10));
@@ -440,6 +439,8 @@ public class ShipperPanel extends JPanel implements ActionListener {
             }
 		}
 	}
+	
+	
 	public void displayShipper(){
 		Connection connection = null;
 	    add(name);
