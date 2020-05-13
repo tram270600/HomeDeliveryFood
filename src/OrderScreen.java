@@ -11,54 +11,66 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 
 public class OrderScreen {
 
 	private JFrame frame;
 	private JTable table;
-	private ArrayList<RestaurantMenu> list;
 	
 	//change WHERE clause
-	
-	private String query1 = "select R.ResNo, M.DishID, M.DishName, M.Category, M.Price, M.Image, R.ResName"
-							+ " from Restaurant R, Menu M" 
-							+ " where (CHARINDEX('Milk', M.DishName) > 0 AND  M.ResNo = R.ResNo)";
-	private String query2 = "select M.ResNo, M.DishID, M.DishName, M.Category, M.Price, M.Image, R.ResName"
-			+ " from Restaurant R, Menu M" 
-			+ " where R.ResName = '" + RestaurantTable.getRes() + "' AND  M.ResNo = R.ResNo";
+	private String query;
 	private JButton btnNewButton;
 	private JButton btnNewButton_1;
 	private JLabel text0, text1, text2, text3, text4, text5, text6, text7;
 
+	
 	public void showFood() {
-		Query qr = new Query();
 		if(RestaurantTable.getSelected() == true) { 
-			list = qr.table(query2);
+			query = "select M.ResNo, M.DishID, M.DishName, M.Category, M.Price, M.Image, R.ResName"
+					+ " from Restaurant R, Menu M" 
+					+ " where R.ResName = '" + RestaurantTable.getRes() + "' AND  M.ResNo = R.ResNo";
 		} else {
-			list = qr.table(query1);
+			query = "select R.ResNo, M.DishID, M.DishName, M.Category, M.Price, M.Image, R.ResName"
+					+ " from Restaurant R, Menu M" 
+					+ " where (CHARINDEX('"+ AppScreen.getText() +"', M.DishName) > 0 AND  M.ResNo = R.ResNo)";
 		}
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		Object[] row = new Object[8];
-		for (int i = 0; i < list.size(); i++) {
-			row[0] = list.get(i).getResNo();
-			row[1] = list.get(i).getDishID();
-			row[2] = list.get(i).getDishName();
-			row[3] = list.get(i).getCategory();
-			row[4] = list.get(i).getPrice();
-			if (list.get(i).getImage() != null) {
-				ImageIcon image = new ImageIcon(new ImageIcon(list.get(i).getImage()).getImage().getScaledInstance(100,
-						120, Image.SCALE_SMOOTH));
-				row[5] = image;
-			} else {
-				row[5] = null;}
-			row[6] = list.get(i).getResName();
-			row[7] = 0;
-			model.addRow(row);
-		}
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
+			Connection connection = DriverManager.getConnection(connectionURL, "sa", "hai01256445678");
+			System.out.println(query);
+			Statement st = connection.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				row[0] = rs.getString("ResNo");
+				row[1] = rs.getString("DishID");
+				row[2] = rs.getString("DishName");
+				row[3] = rs.getString("Category");
+				row[4] = rs.getString("Price");
+				if (rs.getBytes("Image") != null) {
+					ImageIcon image = new ImageIcon(new ImageIcon(rs.getBytes("Image")).getImage().getScaledInstance(100,
+							120, Image.SCALE_SMOOTH));
+					row[5] = image;
+				} else {
+					row[5] = null;}
+				row[6] = rs.getString("ResName");
+				row[7] = "0";
+				model.addRow(row);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e);
+		}	
 	}
 	
-	public static void orderScreen() {
+	public static void display() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -72,7 +84,7 @@ public class OrderScreen {
 	}
 
 
-	public FoodTable() {
+	public OrderScreen() {
 		initialize();
 		showFood();
 	}
@@ -160,6 +172,8 @@ public class OrderScreen {
 				
 				text7.setText((String) table.getValueAt(number,7));
 				String amount = text7.getText();
+				
+				System.out.println(Customer.getCusPhone());
 //				System.out.println("T IN NE: "+ table.getValueAt(number,6));
 //				System.out.println("U nè: "+u);
 				
@@ -177,8 +191,14 @@ public class OrderScreen {
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.setVisible(false);
-				RestaurantTable rt = new RestaurantTable();
-		    	rt.orderScreen();
+				try {
+					if(AppScreen.isSearchingRes(AppScreen.getText()) == true && AppScreen.isSearchingFood(AppScreen.getText()) == false) {
+//					RestaurantTable rt = new RestaurantTable();
+						RestaurantTable.display();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnNewButton_2.setBounds(406, 250, 89, 23);
