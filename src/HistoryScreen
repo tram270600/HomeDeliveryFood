@@ -1,0 +1,117 @@
+import java.awt.EventQueue;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+public class HistoryScreen {
+
+	private JFrame frame;
+	private JTable table;
+	/**
+	 * Launch the application.
+	 */
+	public static void display() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					HistoryScreen window = new HistoryScreen();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public HistoryScreen() {
+		initialize();
+		displayHistory();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 1200, 600);
+		frame.getContentPane().setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 0, 1182, 429);
+		frame.getContentPane().add(scrollPane);
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Status", "Customer Address", "Customer Phone", "Customer Name", "Restaurant Address", "Restaurant Name", "BillID", "OrderID"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, String.class, String.class, String.class, String.class, String.class, int.class, int.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		scrollPane.setViewportView(table);
+	}
+	public ArrayList<tableHistory> History() {
+		ArrayList<tableHistory> list = new ArrayList<tableHistory>();
+		Connection connection = null;
+		try{
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			String connectionURL = "jdbc:sqlserver://DESKTOP-1TFES8J:1433;databaseName=MidTerm;integratedSecurity=true";
+			connection = DriverManager.getConnection(connectionURL, "sa", "leanhkhoa1602");
+			String query1 = "SELECT B.CusAddress,B.CusPhone,B.CusName,R1.Address,R.ResName,B.BillID,O.OrderID" + 
+							" FROM Bill B, ResAddress R1 , Restaurant R ,Orders O" + 
+							" WHERE B.ResNo = R1.ResNo AND R1.ResNo = R.ResNo AND O.ResNo = R.ResNo AND O.Status='Done'" ;
+			System.out.println(query1);
+			Statement st = connection.createStatement();
+			//System.out.println("n0");
+			ResultSet rs = st.executeQuery(query1);	
+			//System.out.println("n1");
+			tableHistory th;
+			while (rs.next()) {
+				th = new tableHistory(rs.getString("Status"),rs.getString("CustomerAddress"), rs.getString("CustomerPhone"),
+						rs.getString("CustomerName"),rs.getString("RestaurantAddress"),rs.getString("RestaurantName")
+						,rs.getInt("BillID"),rs.getInt("OrderID"));
+				//System.out.println("n");
+				list.add(th);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e);
+			System.out.println("error");
+		}
+		return list;
+	}
+	
+	public void displayHistory() {
+		ArrayList<tableHistory> list = History();
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		Object[] row = new Object[8];
+		for (int i = 0; i < list.size(); i++) {
+			row[0] = list.get(i).getStatus();
+			row[1] = list.get(i).getCustomerAddress();
+			row[2] = list.get(i).getCustomerPhone();
+			row[3] = list.get(i).getCustomerName();
+			row[4] = list.get(i).getRestaurantAddress();
+			row[5] = list.get(i).getRestaurantName();
+			row[6] = list.get(i).getBillID();
+			row[7] = list.get(i).getOrderID();
+			model.addRow(row);
+		}
+	}
+}
