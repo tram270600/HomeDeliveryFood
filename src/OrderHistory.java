@@ -10,6 +10,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class OrderHistory {
 
@@ -18,46 +21,35 @@ public class OrderHistory {
 	private Customer customer;
 	private String CusNo;
 	private Connection connection = null;
+	private JButton btnNewButton;
 
-	public ArrayList<Order> orderList() {
 
-		ArrayList<Order> ordersList = new ArrayList<>();
+	public void showOrder() {
+		DefaultTableModel model = (DefaultTableModel) jTable_display_order.getModel();
+		Object[] row = new Object[7];
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
-			connection = DriverManager.getConnection(connectionURL, "sa", "hai01256445678");
-			String query1 = "SELECT * FROM Orders WHERE CusNo = (SELECT C.CusNo"
-															+ " FROM Customer C, Users U"
-															+ " WHERE U.Username = '" + SignInPanel.getUsername()
-															+ "' AND U.UserID = C.UserID)";
-			System.out.println(query1);
+			Connection connection = DriverManager.getConnection(connectionURL, "sa", "hai01256445678");
+			String query = "SELECT * FROM Orders WHERE OrderStatus = 'Done' AND CusNo = (SELECT C.CusNo"
+					+ " FROM Customer C, Users U"
+					+ " WHERE U.Username = '" + SignInPanel.getUsername()
+					+ "' AND U.UserID = C.UserID)";
+			System.out.println(query);		
 			Statement st = connection.createStatement();
-			ResultSet rs = st.executeQuery(query1);
-			Order order;
+			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
-				order = new Order(rs.getString("ServerID"),rs.getInt("OrderID"), rs.getString("ResNo"), rs.getInt("CusNo"),
-						rs.getInt("ShipNo"), rs.getString("OrderPrice"), rs.getString("OrderStatus"));
-				ordersList.add(order);
+				row[0] = rs.getString("ServerID");	
+				row[1] = rs.getString("OrderID");
+				row[2] = rs.getString("ResNo");	
+				row[3] = rs.getInt("CusNo");
+				row[4] = rs.getInt("ShipNo");	
+				row[5] = rs.getString("OrderPrice");
+				row[6] = rs.getString("OrderStatus");	
+				model.addRow(row);
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e);
-		}
-		return ordersList;
-	}
-
-	public void showOrder() {
-		ArrayList<Order> list = orderList();
-		DefaultTableModel model = (DefaultTableModel) jTable_display_order.getModel();
-		Object[] row = new Object[7];
-		for (int i = 0; i < list.size(); i++) {
-			row[0] = list.get(i).getServerID();
-			row[1] = list.get(i).getOrderID();
-			row[2] = list.get(i).getResNo();
-			row[3] = list.get(i).getCusNo();
-			row[4] = list.get(i).getShipNo();
-			row[5] = list.get(i).getOrderPrice();
-			row[6] = list.get(i).getOrderStatus();
-			model.addRow(row);
 		}
 	}
 
@@ -88,7 +80,7 @@ public class OrderHistory {
 	private void initialize() {
 		frmOrderHistory = new JFrame();
 		frmOrderHistory.setTitle("Order History");
-		frmOrderHistory.setBounds(100, 100, 657, 366);
+		frmOrderHistory.setBounds(375, 170, 657, 366);
 		frmOrderHistory.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmOrderHistory.getContentPane().setLayout(null);
 
@@ -118,5 +110,17 @@ public class OrderHistory {
 			}
 		});
 		scrollPane.setViewportView(jTable_display_order);
+		
+		btnNewButton = new JButton("Back");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Customer.activity();
+				frmOrderHistory.setVisible(false);
+			}
+		});
+		btnNewButton.setBounds(275, 231, 89, 23);
+		frmOrderHistory.getContentPane().add(btnNewButton);
+		//scrollPane.getViewport().add(jTable_display_order, null);
+		
 	}
 }
