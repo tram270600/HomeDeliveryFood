@@ -11,6 +11,10 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 
 public class ResSearchingScreen {
@@ -21,18 +25,29 @@ public class ResSearchingScreen {
 	private static boolean isSelected = false;
 	
 	public void displayRes() {
-		Query qr = new Query();
-		ArrayList<RestaurantPanel> list = qr.resTable();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		Object[] row = new Object[7];
-		for (int i = 0; i < list.size(); i++) {
-			row[0] = list.get(i).getName();
-			row[1] = list.get(i).getAddress();
-			model.addRow(row);
+		Object[] row = new Object[2];
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
+			Connection connection = DriverManager.getConnection(connectionURL, "sa", "hai01256445678");
+			String query = "select R.ResNo, R.ResName"
+					+ " from Restaurant R"
+					+ " where CHARINDEX('"+ AppScreen.getText() +"', ResName) > 0";
+			System.out.println(query);		
+			Statement st = connection.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				row[0] = rs.getString("ResNo");	
+				row[1] = rs.getString("ResName");
+				model.addRow(row);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e);
 		}
 	}
 	
-	public static void orderScreen() {
+	public static void display() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -48,7 +63,7 @@ public class ResSearchingScreen {
 	/**
 	 * Create the application.
 	 */
-	public RestaurantTable() {
+	public ResSearchingScreen() {
 		initialize();
 		displayRes();
 	}
@@ -102,12 +117,21 @@ public class ResSearchingScreen {
 				res = getRes.getText();
 				System.out.println(res);
 				System.out.println(number);
-				OrderScreen o = new OrderScreen();
-				o.orderScreen();
+				FoodTable f = new FoodTable();
+				f.display();
 				frame.setVisible(false);
 			}
 			});
-		btnNewButton.setBounds(333, 259, 89, 23);
+		btnNewButton.setBounds(401, 257, 89, 23);
 		frame.getContentPane().add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Back");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+			}
+		});
+		btnNewButton_1.setBounds(273, 257, 89, 23);
+		frame.getContentPane().add(btnNewButton_1);
 	}
 }
