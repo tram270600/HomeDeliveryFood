@@ -113,7 +113,11 @@ public class OrderScreen {
 				String.class, String.class, String.class, String.class, String.class, Byte.class, String.class, String.class
 			};
 			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
+				if(columnIndex == 5) {
+					return Icon.class;
+				} else {
+					return columnTypes[columnIndex];
+				}
 			}
 			boolean[] columnEditables = new boolean[] {
 				false, true, true, true, true, true, true, true
