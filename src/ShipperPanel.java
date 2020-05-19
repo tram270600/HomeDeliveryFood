@@ -275,7 +275,16 @@ public class ShipperPanel extends JPanel implements ActionListener {
 				passwordframe.setVisible(true);
 			}
 		});
-	
+		
+		JButton btnLogOut = new JButton("Log Out");
+		btnLogOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			
+			}
+		});
+		btnLogOut.setBounds(410, 158, 140, 25);
+		Profile.add(btnLogOut);
+		
 		JButton btnHistory = new JButton();
 		btnHistory.setIcon(new ImageIcon("D:\\ImageSource\\btntransactionHistory.png"));
 		btnHistory.addActionListener(new ActionListener() {
