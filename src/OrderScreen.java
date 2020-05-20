@@ -74,7 +74,7 @@ public class OrderScreen {
 			public void run() {
 				try {
 					FoodTable window = new FoodTable();
-					window.frame.setVisible(true);
+					window.jDialog1.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
