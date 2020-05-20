@@ -38,6 +38,9 @@ public class CustomerPanel extends JPanel implements ActionListener {
 	private JLabel password, errorMessage,
 				   title, phoneLabel, addressLabel,
 				   reward,address, phone, name;
+	private JDialog jDialog1, jDialog2;
+	private int rewardPoints;
+	static JTable jTableStatus, jTableSave;
 
 	public CustomerPanel() {
 		CustomerComponent();
@@ -272,6 +275,13 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		
 		btnPlace = new JButton("Saved places");
 		btnPlace.setBounds(180, 140, 130, 25);
+		btnPlace.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e)
+		    {	
+		    	activityFrame.dispose();
+		    	savedPlace();
+		    	showSavedPlace();
+		    }});
 		activityFrame.add(btnPlace);
 		
 		btnHistory = new JButton("Order history");
@@ -281,94 +291,177 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		    {
 		    	OrderHistory o = new OrderHistory();
 		    	o.orderScreen();
-		    	activityFrame.dispose();
-//		    	RestaurantTable rt = new RestaurantTable();
-//		    	rt.orderScreen();
-//		    	
-//		    	FoodTable f = new FoodTable();
-//		    	f.orderScreen();
-		    	
-//		    	MenuImage m;
-//				try {
-//					m = new MenuImage();
-//				} catch (SQLException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//		    	MenuImage.orderScreen();
-		    	
+		    	activityFrame.dispose();	    	
 		    }});
 		activityFrame.add(btnHistory);
 		
 		btnStatus = new JButton("Delivery status");
 		btnStatus.setBounds(180, 90, 130, 25);
+		btnStatus.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e)
+		    {	
+		    	activityFrame.dispose();
+		    	deliStatus();
+		    	showStatus();
+		    }});
 		activityFrame.add(btnStatus);
 	}
 	
 	public void password() {
-		passwordFrame = new JFrame("Password Modify");
-		passwordFrame.setBounds(500, 200, 500, 200);
-		passwordFrame.getContentPane().setLayout(null);
-		passwordFrame.setVisible(true);
-		passwordFrame.setResizable(false);
+// 		passwordFrame = new JFrame("Password Modify");
+// 		passwordFrame.setBounds(500, 200, 500, 200);
+// 		passwordFrame.getContentPane().setLayout(null);
+// 		passwordFrame.setVisible(true);
+// 		passwordFrame.setResizable(false);
 
 		
-		JLabel currentPassword = new JLabel("Current Password");
-		currentPassword.setFont(new Font("Arial", Font.PLAIN, 15));
-		currentPassword.setBounds(10, 10, 130, 15);
-		passwordFrame.add(currentPassword);
+// 		JLabel currentPassword = new JLabel("Current Password");
+// 		currentPassword.setFont(new Font("Arial", Font.PLAIN, 15));
+// 		currentPassword.setBounds(10, 10, 130, 15);
+// 		passwordFrame.add(currentPassword);
 		
-		currentText = new JPasswordField();
-		currentText.setBounds(160, 10, 300, 20);
-		passwordFrame.add(currentText);
+// 		currentText = new JPasswordField();
+// 		currentText.setBounds(160, 10, 300, 20);
+// 		passwordFrame.add(currentText);
 		
-		JLabel newPassword = new JLabel("New Password");
-		newPassword.setFont(new Font("Arial", Font.PLAIN, 15));
-		newPassword.setBounds(10, 40, 100, 15);
-		passwordFrame.add(newPassword);	
+// 		JLabel newPassword = new JLabel("New Password");
+// 		newPassword.setFont(new Font("Arial", Font.PLAIN, 15));
+// 		newPassword.setBounds(10, 40, 100, 15);
+// 		passwordFrame.add(newPassword);	
 		
-		newText = new JPasswordField();
-		newText.setBounds(160, 40, 300, 20);
-		passwordFrame.add(newText);
+// 		newText = new JPasswordField();
+// 		newText.setBounds(160, 40, 300, 20);
+// 		passwordFrame.add(newText);
 		
-		JLabel confirm = new JLabel("Confirm Password");
-		confirm.setFont(new Font("Arial", Font.PLAIN, 15));
-		confirm.setBounds(10, 70, 135, 15);
-		passwordFrame.add(confirm);	
+// 		JLabel confirm = new JLabel("Confirm Password");
+// 		confirm.setFont(new Font("Arial", Font.PLAIN, 15));
+// 		confirm.setBounds(10, 70, 135, 15);
+// 		passwordFrame.add(confirm);	
 		
-		confirmText = new JPasswordField();
-		confirmText.setBounds(160, 70, 300, 20);
-		passwordFrame.add(confirmText);
+// 		confirmText = new JPasswordField();
+// 		confirmText.setBounds(160, 70, 300, 20);
+// 		passwordFrame.add(confirmText);
 		
-		errorMessage = new JLabel();
-		errorMessage.setFont(new Font("Arial", Font.BOLD, 15));
-		errorMessage.setSize(250, 50);
-		errorMessage.setLocation(140, 100);
-		passwordFrame.add(errorMessage);
+// 		errorMessage = new JLabel();
+// 		errorMessage.setFont(new Font("Arial", Font.BOLD, 15));
+// 		errorMessage.setSize(250, 50);
+// 		errorMessage.setLocation(140, 100);
+// 		passwordFrame.add(errorMessage);
 		
-		btnChangePassword = new JButton("Change");
-		btnChangePassword.setBounds(140,140, 90, 25);
-		btnChangePassword.addActionListener(new ActionListener() {
+// 		btnChangePassword = new JButton("Change");
+// 		btnChangePassword.setBounds(140,140, 90, 25);
+// 		btnChangePassword.addActionListener(new ActionListener() {
+// 		    public void actionPerformed(ActionEvent e)
+// 		    {
+// 		    	//passwordFrame.setVisible(false);
+// 		    	try {	
+// 					changePassword();
+// 					JOptionPane.showMessageDialog(null, "Saved");
+// 				} catch (Exception e1) {
+// 					e1.printStackTrace();
+// 				}
+// 		    }});
+// 		passwordFrame.add(btnChangePassword);
+		
+// 		JButton btnBack = new JButton("Back");
+// 		btnBack.setBounds(260,140, 90, 25);
+// 		btnBack.addActionListener(new ActionListener() {
+// 		    public void actionPerformed(ActionEvent e)
+// 		    {
+// 		    	passwordFrame.dispose();
+// 		    }});
+// 		passwordFrame.add(btnBack);
+	jDialog2 = new javax.swing.JDialog();
+	jDialog2.setLocation(500, 200);
+		
+        JLabel jLabel1 = new javax.swing.JLabel("Current Password");
+        JLabel jLabel2 = new javax.swing.JLabel("New Password");
+        JLabel jLabel3 = new javax.swing.JLabel("Confirm Password");
+        
+        currentText = new JPasswordField();
+        newText = new JPasswordField();
+        confirmText = new JPasswordField();
+        
+        char[] oldPassword = currentText.getPassword();
+		char[] newPassword = newText.getPassword();
+		char[] confirmPassword = confirmText.getPassword();
+		
+    	String old = new String(oldPassword);
+    	String neww = new String(newPassword);
+    	String confirm = new String(confirmPassword);
+        
+        JButton jButton1 = new javax.swing.JButton("Change");
+        jButton1.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e)
-		    {
-		    	//passwordFrame.setVisible(false);
-		    	try {	
+		    {	
+		    	if ((old.length() == 0) || (neww.length() == 0) || (confirm.length() == 0))
+					JOptionPane.showMessageDialog(null, "Please fulfill the information");
+		    	else {
+		    	try {
 					changePassword();
 					JOptionPane.showMessageDialog(null, "Saved");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-		    }});
-		passwordFrame.add(btnChangePassword);
-		
-		JButton btnBack = new JButton("Back");
-		btnBack.setBounds(260,140, 90, 25);
-		btnBack.addActionListener(new ActionListener() {
+		    }
+		    }
+		    });
+        JButton jButton2 = new JButton("Ok");
+        jButton2.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e)
-		    {
-		    	passwordFrame.dispose();
-		    }});
-		passwordFrame.add(btnBack);
+		    {	
+		    	jDialog2.setVisible(false);
+		    }
+		    });
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog2.getContentPane());
+        jDialog2.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jDialog1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(currentText)
+                            .addComponent(newText)
+                            .addComponent(confirmText, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)))
+                    .addGroup(jDialog1Layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(currentText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(newText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(confirmText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(37, Short.MAX_VALUE))
+        );
+
+        jDialog2.pack();
+        jDialog2.setModal(true);
+        jDialog2.setVisible(true);
 	}
 	
 	public void displayProfile(){
@@ -496,44 +589,79 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		mailFrame.add(btnDelete);	
 	}
 	public void edit() {
-		editFrame = new JFrame("Edit Information");
-		editFrame.setBounds(500, 200, 500, 300);
-		editFrame.getContentPane().setLayout(null);
-		editFrame.setVisible(true);
+// 		editFrame = new JFrame("Edit Information");
+// 		editFrame.setBounds(500, 200, 500, 300);
+// 		editFrame.getContentPane().setLayout(null);
+// 		editFrame.setVisible(true);
 		
-		JLabel phone = new JLabel("phone number");
-		phone.setFont(new Font("Arial", Font.PLAIN, 15));
-		phone.setBounds(10, 10, 100, 15);
-		editFrame.add(phone);
+// 		JLabel phone = new JLabel("phone number");
+// 		phone.setFont(new Font("Arial", Font.PLAIN, 15));
+// 		phone.setBounds(10, 10, 100, 15);
+// 		editFrame.add(phone);
 		
-		phoneText = new JTextField();
-		phoneText.setBounds(160, 10, 300, 20);
-		editFrame.add(phoneText); 
+// 		phoneText = new JTextField();
+// 		phoneText.setBounds(160, 10, 300, 20);
+// 		editFrame.add(phoneText); 
 		
-		JLabel address = new JLabel("address");
-		address.setFont(new Font("Arial", Font.PLAIN, 15));
-		address.setBounds(10, 40, 100, 15);
-		editFrame.add(address);
+// 		JLabel address = new JLabel("address");
+// 		address.setFont(new Font("Arial", Font.PLAIN, 15));
+// 		address.setBounds(10, 40, 100, 15);
+// 		editFrame.add(address);
 		
-		addressText = new JTextField();
-		addressText.setBounds(160, 40, 300, 20);
-		editFrame.add(addressText); 
+// 		addressText = new JTextField();
+// 		addressText.setBounds(160, 40, 300, 20);
+// 		editFrame.add(addressText); 
 		
-		JLabel name = new JLabel("name");
-		name.setFont(new Font("Arial", Font.PLAIN, 15));
-		name.setBounds(10, 70, 100, 15);
-		editFrame.add(name);
+// 		JLabel name = new JLabel("name");
+// 		name.setFont(new Font("Arial", Font.PLAIN, 15));
+// 		name.setBounds(10, 70, 100, 15);
+// 		editFrame.add(name);
 		
-		nameText = new JTextField();
-		nameText.setBounds(160, 70, 300, 20);
-		editFrame.add(nameText); 
+// 		nameText = new JTextField();
+// 		nameText.setBounds(160, 70, 300, 20);
+// 		editFrame.add(nameText); 
 		
-		JButton btnChange = new JButton("Change");
-		btnChange.setBounds(160, 200, 150, 25);
-		editFrame.add(btnChange);
-		btnChange.addActionListener(new ActionListener() {
+// 		JButton btnChange = new JButton("Change");
+// 		btnChange.setBounds(160, 200, 150, 25);
+// 		editFrame.add(btnChange);
+// 		btnChange.addActionListener(new ActionListener() {
+// 		    public void actionPerformed(ActionEvent e)
+// 		    {
+// 		    	try {
+// 					editProfile();
+// 					JOptionPane.showMessageDialog(null, "Saved");
+// 				} catch (Exception e1) {
+// 					e1.printStackTrace();
+// 				}
+// 		    }
+// 		    });
+// 		JButton btnOK = new JButton("OK");
+// 		btnOK.setBounds(315, 200, 150, 25);
+// 		editFrame.add(btnOK);
+// 		btnOK.addActionListener(new ActionListener() {
+// 		    public void actionPerformed(ActionEvent e)
+// 		    {
+// 		    	editFrame.dispose();
+// 		    }
+// 		    });
+	jDialog1 = new javax.swing.JDialog();
+	jDialog1.setLocation(500, 200);
+		
+        JLabel jLabel1 = new javax.swing.JLabel("Phone");
+        JLabel jLabel2 = new javax.swing.JLabel("Address");
+        JLabel jLabel3 = new javax.swing.JLabel("Name");
+        
+        phoneText = new javax.swing.JTextField();
+        addressText = new javax.swing.JTextField();
+        nameText = new javax.swing.JTextField();
+        
+        JButton jButton1 = new javax.swing.JButton("Change");
+        jButton1.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e)
-		    {
+		    {	
+		    	if ((phoneText.getText() != "") || (addressText.getText() != "") || (nameText.getText() != ""))
+					JOptionPane.showMessageDialog(null, "Please fulfill the information");
+		    	else {
 		    	try {
 					editProfile();
 					JOptionPane.showMessageDialog(null, "Saved");
@@ -541,17 +669,67 @@ public class CustomerPanel extends JPanel implements ActionListener {
 					e1.printStackTrace();
 				}
 		    }
-		    });
-		JButton btnOK = new JButton("OK");
-		btnOK.setBounds(315, 200, 150, 25);
-		editFrame.add(btnOK);
-		btnOK.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e)
-		    {
-		    	editFrame.dispose();
 		    }
 		    });
+        JButton jButton2 = new JButton("Ok");
+        jButton2.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e)
+		    {	
+		    	jDialog1.setVisible(false);
+		    }
+		    });
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jDialog1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(phoneText)
+                            .addComponent(addressText)
+                            .addComponent(nameText, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)))
+                    .addGroup(jDialog1Layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(phoneText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addressText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(37, Short.MAX_VALUE))
+        );
+
+        jDialog1.pack();
+        jDialog1.setModal(true);
+        jDialog1.setVisible(true);
 	}
+	
+	
 	
 	public void editProfile() throws Exception {
 		String phoneNo = phoneText.getText();
@@ -598,6 +776,218 @@ public class CustomerPanel extends JPanel implements ActionListener {
             }
 		} 
 	}
+	public static void deliStatus() {
+	JDialog stajDialog = new javax.swing.JDialog();
+	stajDialog.setLocation(400, 200);
+		
+        JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        jTableStatus = new javax.swing.JTable();
+        JButton jButton1 = new javax.swing.JButton();
+
+        jTableStatus.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+            },
+            new String [] {
+                "ServerID", "OrderID", "ResNo", "CusNo", "ShipNo", "Order Price", "Order Status"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, true, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTableStatus);
+        if (jTableStatus.getColumnModel().getColumnCount() > 0) {
+        	jTableStatus.getColumnModel().getColumn(0).setResizable(false);
+        	jTableStatus.getColumnModel().getColumn(1).setResizable(false);
+        	jTableStatus.getColumnModel().getColumn(2).setResizable(false);
+        	jTableStatus.getColumnModel().getColumn(3).setResizable(false);
+        	jTableStatus.getColumnModel().getColumn(4).setResizable(false);
+        	jTableStatus.getColumnModel().getColumn(5).setResizable(false);
+        	jTableStatus.getColumnModel().getColumn(6).setResizable(false);
+        }
+
+        jButton1.setText("Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	stajDialog.setVisible(false);
+            	activity();
+            }
+        });
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(stajDialog.getContentPane());
+        stajDialog.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addGap(246, 246, 246)
+                .addComponent(jButton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
+
+
+        stajDialog.pack();
+        stajDialog.setModal(true);
+        stajDialog.setVisible(true);
+	}
+	
+	public static void savedPlace() {
+		JDialog jDialog = new javax.swing.JDialog();
+		jDialog.setLocation(450, 200);
+        JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        jTableSave = new javax.swing.JTable();
+        JButton jButton1 = new javax.swing.JButton();
+
+        jTableSave.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+            },
+            new String [] {
+                "Restaurant Name", "Address"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTableSave);
+        if (jTableSave.getColumnModel().getColumnCount() > 0) {
+        	jTableSave.getColumnModel().getColumn(0).setResizable(false);
+        	jTableSave.getColumnModel().getColumn(1).setResizable(false);
+        }
+
+        jButton1.setText("Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	jDialog.setVisible(false);
+            	activity();
+            }
+        });
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog.getContentPane());
+        jDialog.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jDialog1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jDialog1Layout.createSequentialGroup()
+                        .addGap(180, 180, 180)
+                        .addComponent(jButton1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
+
+
+        jDialog.pack();
+        jDialog.setModal(true);
+        jDialog.setVisible(true);
+	}
+	
+	public static void showSavedPlace() {
+		DefaultTableModel model = (DefaultTableModel) jTableSave.getModel();
+		Object[] row = new Object[2];
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
+			Connection connection = DriverManager.getConnection(connectionURL, "sa", "hai01256445678");
+			String query = "select R.ResName, Ra.Address " + 
+							"from Orders O1 Join Orders O2 " + 
+							"ON O1.ResNo = O2.ResNo AND O1.CusNo = O2.CusNo AND O1.CusNo = (SELECT C.CusNo " + 
+																							" FROM Customer C, Users U" + 
+																							" WHERE U.Username = '" + SignInPanel.getUsername() + 
+																							"' AND U.UserID = C.UserID)" + 
+							"Join Restaurant R " + 
+							"ON O1.ResNo = R.ResNo " + 
+							"Join ResAddress Ra " + 
+							"On Ra.ResNo = R.ResNo " + 
+							"group by R.ResName, Ra.Address " + 
+							"having count(*) > 2";
+			System.out.println(query);		
+			Statement st = connection.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				row[0] = rs.getString("ResName");	
+				row[1] = rs.getString("Address");
+				model.addRow(row);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e);
+		}
+	}
+	
+	public static void showStatus() {
+		
+		DefaultTableModel model = (DefaultTableModel) jTableStatus.getModel();
+		Object[] row = new Object[7];
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
+			Connection connection = DriverManager.getConnection(connectionURL, "sa", "hai01256445678");
+			String query = "SELECT * FROM Orders WHERE OrderStatus = 'On Delivery' AND CusNo = (SELECT C.CusNo"
+																								+ " FROM Customer C, Users U"
+																								+ " WHERE U.Username = '" + SignInPanel.getUsername()
+																								+ "' AND U.UserID = C.UserID)";
+			System.out.println(query);		
+			Statement st = connection.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				row[0] = rs.getString("ServerID");	
+				row[1] = rs.getString("OrderID");
+				row[2] = rs.getString("ResNo");	
+				row[3] = rs.getInt("CusNo");
+				row[4] = rs.getInt("ShipNo");	
+				row[5] = rs.getString("OrderPrice");
+				row[6] = rs.getString("OrderStatus");	
+				model.addRow(row);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e);
+		}
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		//String text = textArea.getText();
