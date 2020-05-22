@@ -39,6 +39,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 				   title, phoneLabel, addressLabel,
 				   reward,address, phone, name;
 	private JDialog jDialog1, jDialog2;
+	private static JDialog jDialogSaved, stajDialog;
 	private int rewardPoints;
 	static JTable jTableStatus, jTableSave;
 
@@ -281,6 +282,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		    	activityFrame.dispose();
 		    	savedPlace();
 		    	showSavedPlace();
+			jDialogSaved.setVisible(true);
 		    }});
 		activityFrame.add(btnPlace);
 		
@@ -303,6 +305,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		    	activityFrame.dispose();
 		    	deliStatus();
 		    	showStatus();
+			stajDialog.setVisible(true);
 		    }});
 		activityFrame.add(btnStatus);
 	}
@@ -777,7 +780,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		} 
 	}
 	public static void deliStatus() {
-	JDialog stajDialog = new javax.swing.JDialog();
+	stajDialog = new javax.swing.JDialog();
 	stajDialog.setLocation(400, 200);
 		
         JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
@@ -851,12 +854,11 @@ public class CustomerPanel extends JPanel implements ActionListener {
 
         stajDialog.pack();
         stajDialog.setModal(true);
-        stajDialog.setVisible(true);
 	}
 	
 	public static void savedPlace() {
-		JDialog jDialog = new javax.swing.JDialog();
-		jDialog.setLocation(450, 200);
+	jDialogSaved = new javax.swing.JDialog();
+	jDialogSaved.setLocation(450, 200);
         JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTableSave = new javax.swing.JTable();
         JButton jButton1 = new javax.swing.JButton();
@@ -896,8 +898,8 @@ public class CustomerPanel extends JPanel implements ActionListener {
             	activity();
             }
         });
-        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog.getContentPane());
-        jDialog.getContentPane().setLayout(jDialog1Layout);
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialogSaved.getContentPane());
+        jDialogSaved.getContentPane().setLayout(jDialog1Layout);
         jDialog1Layout.setHorizontalGroup(
             jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDialog1Layout.createSequentialGroup()
@@ -921,9 +923,8 @@ public class CustomerPanel extends JPanel implements ActionListener {
         );
 
 
-        jDialog.pack();
-        jDialog.setModal(true);
-        jDialog.setVisible(true);
+        jDialogSaved.pack();
+        jDialogSaved.setModal(true);
 	}
 	
 	public static void showSavedPlace() {
