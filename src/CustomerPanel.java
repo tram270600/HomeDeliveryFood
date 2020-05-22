@@ -311,69 +311,6 @@ public class CustomerPanel extends JPanel implements ActionListener {
 	}
 	
 	public void password() {
-// 		passwordFrame = new JFrame("Password Modify");
-// 		passwordFrame.setBounds(500, 200, 500, 200);
-// 		passwordFrame.getContentPane().setLayout(null);
-// 		passwordFrame.setVisible(true);
-// 		passwordFrame.setResizable(false);
-
-		
-// 		JLabel currentPassword = new JLabel("Current Password");
-// 		currentPassword.setFont(new Font("Arial", Font.PLAIN, 15));
-// 		currentPassword.setBounds(10, 10, 130, 15);
-// 		passwordFrame.add(currentPassword);
-		
-// 		currentText = new JPasswordField();
-// 		currentText.setBounds(160, 10, 300, 20);
-// 		passwordFrame.add(currentText);
-		
-// 		JLabel newPassword = new JLabel("New Password");
-// 		newPassword.setFont(new Font("Arial", Font.PLAIN, 15));
-// 		newPassword.setBounds(10, 40, 100, 15);
-// 		passwordFrame.add(newPassword);	
-		
-// 		newText = new JPasswordField();
-// 		newText.setBounds(160, 40, 300, 20);
-// 		passwordFrame.add(newText);
-		
-// 		JLabel confirm = new JLabel("Confirm Password");
-// 		confirm.setFont(new Font("Arial", Font.PLAIN, 15));
-// 		confirm.setBounds(10, 70, 135, 15);
-// 		passwordFrame.add(confirm);	
-		
-// 		confirmText = new JPasswordField();
-// 		confirmText.setBounds(160, 70, 300, 20);
-// 		passwordFrame.add(confirmText);
-		
-// 		errorMessage = new JLabel();
-// 		errorMessage.setFont(new Font("Arial", Font.BOLD, 15));
-// 		errorMessage.setSize(250, 50);
-// 		errorMessage.setLocation(140, 100);
-// 		passwordFrame.add(errorMessage);
-		
-// 		btnChangePassword = new JButton("Change");
-// 		btnChangePassword.setBounds(140,140, 90, 25);
-// 		btnChangePassword.addActionListener(new ActionListener() {
-// 		    public void actionPerformed(ActionEvent e)
-// 		    {
-// 		    	//passwordFrame.setVisible(false);
-// 		    	try {	
-// 					changePassword();
-// 					JOptionPane.showMessageDialog(null, "Saved");
-// 				} catch (Exception e1) {
-// 					e1.printStackTrace();
-// 				}
-// 		    }});
-// 		passwordFrame.add(btnChangePassword);
-		
-// 		JButton btnBack = new JButton("Back");
-// 		btnBack.setBounds(260,140, 90, 25);
-// 		btnBack.addActionListener(new ActionListener() {
-// 		    public void actionPerformed(ActionEvent e)
-// 		    {
-// 		    	passwordFrame.dispose();
-// 		    }});
-// 		passwordFrame.add(btnBack);
 	jDialog2 = new javax.swing.JDialog();
 	jDialog2.setLocation(500, 200);
 		
@@ -385,28 +322,74 @@ public class CustomerPanel extends JPanel implements ActionListener {
         newText = new JPasswordField();
         confirmText = new JPasswordField();
         
-        char[] oldPassword = currentText.getPassword();
-		char[] newPassword = newText.getPassword();
-		char[] confirmPassword = confirmText.getPassword();
-		
-    	String old = new String(oldPassword);
-    	String neww = new String(newPassword);
-    	String confirm = new String(confirmPassword);
-        
         JButton jButton1 = new javax.swing.JButton("Change");
         jButton1.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e)
 		    {	
-		    	if ((old.length() == 0) || (neww.length() == 0) || (confirm.length() == 0))
-					JOptionPane.showMessageDialog(null, "Please fulfill the information");
-		    	else {
-		    	try {
-					changePassword();
-					JOptionPane.showMessageDialog(null, "Saved");
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-		    }
+		    	char[] oldPassword = currentText.getPassword();
+			char[] newPassword = newText.getPassword();
+			char[] confirmPassword = confirmText.getPassword();
+				
+		    	String old = new String(oldPassword);
+		    	String neww = new String(newPassword);
+		    	String confirm = new String(confirmPassword);
+		        
+		    	System.out.println("Old is" + old);
+		    	System.out.println("neww is" + neww);
+		    	System.out.println("confirm is" + confirm);
+		    	
+		    	if ((old.length() != 0) && (neww.length() != 0) && (confirm.length() != 0)) {
+		    		char[] currentpassword = currentText.getPassword();
+				String cPassword = "";
+				for (int i = 0; i < currentpassword.length; i++) {
+					cPassword += currentpassword[i];
+					}
+					
+				char[] newpassword = newText.getPassword();
+				String nPassword = "";
+				for (int i = 0; i < newpassword.length; i++) {
+					nPassword += newpassword[i];
+					}
+				char[] confirmpassword = confirmText.getPassword();
+				String cfPassword = "";
+				for (int i = 0; i < confirmpassword.length; i++) {
+					cfPassword += confirmpassword[i];
+					}
+				System.out.println(nPassword);
+				System.out.println(cfPassword);
+					try {
+						try {
+							Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+						} catch (ClassNotFoundException e1) {
+							e1.printStackTrace();
+						}
+						String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
+						connection = DriverManager.getConnection(connectionURL, "sa","hai01256445678");
+						System.out.println("Success");
+						try {
+							if ((JavaConnect2Sql.searchInfo(SignInPanel.getUsername(), cPassword) == true) &&  nPassword.equals(cfPassword) == true) {
+								System.out.println(nPassword.equals(cfPassword));
+								System.out.println("n" +nPassword);
+								System.out.println("cf" +cfPassword);
+								PreparedStatement st = (PreparedStatement) connection
+							            .prepareStatement("UPDATE Users set Password= ? where Username='" 
+							            		         + SignInPanel.getUsername()+"'");
+								st.setString(1, cfPassword);
+							    st.executeUpdate();
+							    JOptionPane.showMessageDialog(null, "Saved");
+							} else {
+								JOptionPane.showMessageDialog(null, "Please try again");
+							}
+						} catch (HeadlessException e1) {
+							e1.printStackTrace();
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					} catch (SQLException sqlException) {
+		                sqlException.printStackTrace();
+		            }
+		    	} else
+		    		JOptionPane.showMessageDialog(null, "Please fill in the blank");
 		    }
 		    });
         JButton jButton2 = new JButton("Ok");
