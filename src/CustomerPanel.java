@@ -311,19 +311,19 @@ public class CustomerPanel extends JPanel implements ActionListener {
 	}
 	
 	public void password() {
-	jDialog2 = new javax.swing.JDialog();
-	jDialog2.setLocation(500, 200);
+		jDialog2 = new javax.swing.JDialog();
+		jDialog2.setLocation(500, 200);
 		
-        JLabel jLabel1 = new javax.swing.JLabel("Current Password");
-        JLabel jLabel2 = new javax.swing.JLabel("New Password");
-        JLabel jLabel3 = new javax.swing.JLabel("Confirm Password");
+        	JLabel jLabel1 = new javax.swing.JLabel("Current Password");
+        	JLabel jLabel2 = new javax.swing.JLabel("New Password");
+        	JLabel jLabel3 = new javax.swing.JLabel("Confirm Password");
         
-        currentText = new JPasswordField();
-        newText = new JPasswordField();
-        confirmText = new JPasswordField();
+        	currentText = new JPasswordField();
+        	newText = new JPasswordField();
+        	confirmText = new JPasswordField();
         
-        JButton jButton1 = new javax.swing.JButton("Change");
-        jButton1.addActionListener(new ActionListener() {
+        	JButton jButton1 = new javax.swing.JButton("Change");
+        	jButton1.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e)
 		    {	
 		    	char[] oldPassword = currentText.getPassword();
@@ -498,66 +498,7 @@ public class CustomerPanel extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(null, e);
 		}
 		}
-	
-	public void changePassword() throws Exception {
-		char[] oldPassword = currentText.getPassword();
-		char[] newPassword = newText.getPassword();
-		char[] confirmPassword = confirmText.getPassword();
 		
-    	String old = new String(oldPassword);
-    	String neww = new String(newPassword);
-    	String confirm = new String(confirmPassword);
-    	
-    	if ((old.length() == 0) || (neww.length() == 0) || (confirm.length() == 0))
-    		errorMessage.setText("Please, fulfill the information");
-    	if ((old.length() == 0) && (neww.length() == 0) )
-		errorMessage.setText("Please, fulfill the information");
-    	if ((old.length() == 0) && (confirm.length() == 0) )
-    	errorMessage.setText("Please, fulfill the information");
-    	if ((neww.length() == 0) && (confirm.length() == 0) )
-        	errorMessage.setText("Please, fulfill the information");
-		if ((old.length() != 0) && (neww.length() != 0) && (confirm.length() != 0)) {
-			char[] currentpassword = currentText.getPassword();
-			String cPassword = "";
-			for (int i = 0; i < currentpassword.length; i++) {
-				cPassword += currentpassword[i];
-			}
-			
-			char[] newpassword = newText.getPassword();
-			String nPassword = "";
-			for (int i = 0; i < newpassword.length; i++) {
-				nPassword += newpassword[i];
-			}
-			char[] confirmpassword = newText.getPassword();
-			String cfPassword = "";
-			for (int i = 0; i < confirmpassword.length; i++) {
-				cfPassword += confirmpassword[i];
-			}
-			try {
-				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-				String connectionURL = "jdbc:sqlserver://DESKTOP-CME024L\\SQLEXPRESS:1433;databaseName=DataProject;integratedSecurity=true";
-				connection = DriverManager.getConnection(connectionURL, "sa","hai01256445678");
-				System.out.println("Success");
-				if ((JavaConnect2Sql.searchInfo(SignInPanel.getUsername(), cPassword) == true) 
-						&&  nPassword.equals(cfPassword) == true) {
-					System.out.println(SignInPanel.getUsername());
-					PreparedStatement st = (PreparedStatement) connection
-	                        .prepareStatement("UPDATE Users set Password= ? where Username='" + SignInPanel.getUsername()+"'");
-					st.setString(1, cfPassword);
-                    st.executeUpdate();
-                    System.out.println("Saved");
-				} else {
-					System.out.println("Failed");
-				}
-			} catch (SQLException sqlException) {
-                sqlException.printStackTrace();
-            }
-		}
-		
-			
-	}
-	
-	
 	public void mailbox() {
 		mailFrame = new JFrame("Mail");
 		mailFrame.setBounds(500, 200, 500, 300);
@@ -575,61 +516,6 @@ public class CustomerPanel extends JPanel implements ActionListener {
 		mailFrame.add(btnDelete);	
 	}
 	public void edit() {
-// 		editFrame = new JFrame("Edit Information");
-// 		editFrame.setBounds(500, 200, 500, 300);
-// 		editFrame.getContentPane().setLayout(null);
-// 		editFrame.setVisible(true);
-		
-// 		JLabel phone = new JLabel("phone number");
-// 		phone.setFont(new Font("Arial", Font.PLAIN, 15));
-// 		phone.setBounds(10, 10, 100, 15);
-// 		editFrame.add(phone);
-		
-// 		phoneText = new JTextField();
-// 		phoneText.setBounds(160, 10, 300, 20);
-// 		editFrame.add(phoneText); 
-		
-// 		JLabel address = new JLabel("address");
-// 		address.setFont(new Font("Arial", Font.PLAIN, 15));
-// 		address.setBounds(10, 40, 100, 15);
-// 		editFrame.add(address);
-		
-// 		addressText = new JTextField();
-// 		addressText.setBounds(160, 40, 300, 20);
-// 		editFrame.add(addressText); 
-		
-// 		JLabel name = new JLabel("name");
-// 		name.setFont(new Font("Arial", Font.PLAIN, 15));
-// 		name.setBounds(10, 70, 100, 15);
-// 		editFrame.add(name);
-		
-// 		nameText = new JTextField();
-// 		nameText.setBounds(160, 70, 300, 20);
-// 		editFrame.add(nameText); 
-		
-// 		JButton btnChange = new JButton("Change");
-// 		btnChange.setBounds(160, 200, 150, 25);
-// 		editFrame.add(btnChange);
-// 		btnChange.addActionListener(new ActionListener() {
-// 		    public void actionPerformed(ActionEvent e)
-// 		    {
-// 		    	try {
-// 					editProfile();
-// 					JOptionPane.showMessageDialog(null, "Saved");
-// 				} catch (Exception e1) {
-// 					e1.printStackTrace();
-// 				}
-// 		    }
-// 		    });
-// 		JButton btnOK = new JButton("OK");
-// 		btnOK.setBounds(315, 200, 150, 25);
-// 		editFrame.add(btnOK);
-// 		btnOK.addActionListener(new ActionListener() {
-// 		    public void actionPerformed(ActionEvent e)
-// 		    {
-// 		    	editFrame.dispose();
-// 		    }
-// 		    });
 	jDialog1 = new javax.swing.JDialog();
 	jDialog1.setLocation(500, 200);
 		
@@ -990,7 +876,11 @@ public class CustomerPanel extends JPanel implements ActionListener {
 			activity();
 		}
 		if (e.getSource() == btnModify) {			
-			password();
+			try {
+				password();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		} 
 		if (e.getSource() == btnMailbox) {			
 			mailbox();
